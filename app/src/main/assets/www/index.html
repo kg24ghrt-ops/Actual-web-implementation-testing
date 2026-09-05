@@ -2,23 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+  <meta name="color-scheme" content="light" />
   <title>no home work</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="page">
-    <p class="eyebrow">JAPKGEN Web Shell</p>
-    <h1>no home work</h1>
-    <p class="subtitle">Secure defaults for a WebView-based Android shell.</p>
-    <section class="card">
-      <ul>
-        <li>Secure WebView defaults</li>
-        <li>Offline-ready starter assets</li>
-        <li>Clean HTML, CSS, and JavaScript structure</li>
-      </ul>
-    </section>
-  </main>
+  <div class="toolbar">
+    <select id="formatSelect">
+      <option value="A4" selected>A4 — 210 × 297 mm</option>
+      <option value="A5">A5 — 148 × 210 mm</option>
+    </select>
+    <span id="zoomLabel" class="zoom-label">100%</span>
+    <button id="zoomIn" class="toolbar-btn" title="Zoom in">+</button>
+    <button id="zoomOut" class="toolbar-btn" title="Zoom out">−</button>
+    <button id="resetView" class="toolbar-btn" title="Reset view">Reset</button>
+  </div>
+  <div id="viewport" class="viewport">
+    <div id="paperContainer" class="paper-container gpu-layer">
+      <div id="paper" class="paper paper-a4">
+        <div class="paper-texture"></div>
+        <div class="paper-content" id="paperContent">
+          <header class="doc-header">
+            <div class="doc-title">No Home Work</div>
+            <div class="doc-subtitle">A4 DIN 476 — ISO 216</div>
+          </header>
+          <section class="doc-body">
+            <p>This is a realistic A4 paper rendered at true DIN 476 dimensions (210mm × 297mm). Pinch to zoom, drag to pan.</p>
+          </section>
+        </div>
+        <div class="paper-edge paper-edge-top"></div>
+        <div class="paper-edge paper-edge-right"></div>
+        <div class="paper-edge paper-edge-bottom"></div>
+        <div class="paper-edge paper-edge-left"></div>
+      </div>
+    </div>
+  </div>
+  <script src="paper.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
