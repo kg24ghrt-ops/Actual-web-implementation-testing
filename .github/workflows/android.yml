@@ -61,22 +61,16 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Generate Keystore
+      - name: Restore Signing Keystore
         run: |
-          keytool -genkeypair -v \
-            -keystore release.keystore \
-            -storepass changeit \
-            -alias release \
-            -keypass changeit \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android, OU=Android, O=NoHomeWork, L=Unknown, S=Unknown, C=US"
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release.keystore
 
       - name: Build Release
         run: |
           chmod +x gradlew
-          STORE_PASSWORD=changeit KEY_ALIAS=release KEY_PASSWORD=changeit \
+          STORE_PASSWORD=${{ secrets.STORE_PASSWORD }} \
+          KEY_ALIAS=${{ secrets.KEY_ALIAS }} \
+          KEY_PASSWORD=${{ secrets.KEY_PASSWORD }} \
           ./gradlew assembleRelease --parallel --build-cache --no-daemon
 
       - name: Upload Release APK
