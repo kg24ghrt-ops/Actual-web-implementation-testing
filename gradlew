@@ -27,9 +27,6 @@ cd "$SAVED" >/dev/null
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
-# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options here.
-DEFAULT_JVM_OPTS='"-Xmx64m"'
-
 # Use the maximum available, or set MAX_FD != -1 to use that value.
 MAX_FD="maximum"
 
@@ -104,28 +101,5 @@ if [ "$cygwin" = "false" -a "$darwin" = "false" ] ; then
     fi
 fi
 
-# For Darwin, add options to specify how we find the home directory
-if $darwin; then
-
-    # We want to avoid invoking java, but there's no other option. When paths are
-    # specified by -D options inside java, the '=' characters can't be escaped properly,
-    # so we use the 'apple.laf.ScreenUtilities' java class to hack things up.
-    GRADLE_OPTS="$GRADLE_OPTS \"-Dorg.gradle.jvmargs=$DEFAULT_JVM_OPTS\""
-
-fi
-
-# Collect all arguments for the java command, stacking in reverse order:
-#   * args from the command line
-#   * the main class
-#   * -classpath
-#   * the -Doptions...
-#   * --module-path (only if needed)
-#   * MAIN_CLASS_NAME
-
-# Then, quote the file appropriately:
-#   * on Windows, use ^ to escape multiple spaces in one argument
-#   * otherwise, normally quote with a simple double quote.
-
-# Finally, execute the command.
-
-exec "$JAVACMD" $DEFAULT_JVM_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+# Execute the command, passing all arguments through eval to handle quoting properly
+exec "$JAVACMD" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
