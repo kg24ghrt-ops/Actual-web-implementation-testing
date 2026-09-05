@@ -1,4 +1,4 @@
-/* app.js — App bootstrap and future content rendering hook */
+/* app.js — App bootstrap */
 (function(){
   'use strict';
   document.documentElement.dataset.ready = 'true';
