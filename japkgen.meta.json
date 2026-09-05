@@ -1,0 +1,6 @@
+{
+  "templateName": "webview",
+  "templateKind": "android",
+  "compiler": "android",
+  "deprecated": false
+}
