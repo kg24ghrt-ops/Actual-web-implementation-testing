@@ -13,7 +13,7 @@
 const SRC  = './src/www';
 const DEST = './app/src/main/assets/www';
 
-const命令 = process.argv[2] || 'validate';
+const cmd = process.argv[2] || 'validate';
 
 /* ── helpers ──────────────────────────────────────────────────── */
 function read(p) {
@@ -189,9 +189,9 @@ async function test() {
 
 /* ── run ──────────────────────────────────────────────────────── */
 const commands = { validate, lint, format, build, test };
-const fn = commands[命令];
+const fn = commands[cmd];
 if (!fn) {
-  console.error(`Unknown command: ${命令}. Available: ${Object.keys(commands).join(', ')}`);
+  console.error(`Unknown command: ${cmd}. Available: ${Object.keys(commands).join(', ')}`);
   process.exit(1);
 }
 
