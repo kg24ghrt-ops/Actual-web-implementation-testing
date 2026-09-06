@@ -1,6 +1,6 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
- * build.js — Bun-based CI/CD build script for web assets
+ * build.js — Node.js-based CI/CD build script for web assets
  *
  * Commands:
  *   validate  — Check HTML/CSS/JS parse without errors
@@ -10,20 +10,28 @@
  *   test      — Run validation tests (exit 0 = pass)
  */
 
+const fs = require('fs');
+const path = require('path');
+
 const SRC  = './src/www';
 const DEST = './app/src/main/assets/www';
 
 const cmd = process.argv[2] || 'validate';
 
-/* ── helpers ──────────────────────────────────────────────────── */
+/* ━━ helpers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function read(p) {
-  try { return Bun.file(p).text(); }
-  catch { console.error(`  ✗ cannot read ${p}`); return null; }
+  try { return fs.readFileSync(p, 'utf8'); }
+  catch (e) { console.error(`  ✗ cannot read ${p}`); return null; }
 }
 
 function write(p, content) {
-  Bun.write(p, content);
-  console.log(`  ✓ wrote ${p}`);
+  try {
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.writeFileSync(p, content, 'utf8');
+    console.log(`  ✓ wrote ${p}`);
+  } catch (e) {
+    console.error(`  ✗ cannot write ${p}: ${e.message}`);
+  }
 }
 
 function parseHTML(html) {
@@ -77,9 +85,9 @@ function stripComments(html) {
   return html.replace(/<!--[\s\S]*?-->/g, '');
 }
 
-/* ── commands ─────────────────────────────────────────────────── */
+/* ━━ commands ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 async function validate() {
-  console.log('── validate ──');
+  console.log('━━ validate ━━');
   const files = {
     'index.html': read(`${SRC}/index.html`),
     'styles.css': read(`${SRC}/styles.css`),
@@ -116,7 +124,7 @@ async function validate() {
 }
 
 async function lint() {
-  console.log('── lint ──');
+  console.log('━━ lint ━━');
   const files = {
     'index.html': read(`${SRC}/index.html`),
     'styles.css': read(`${SRC}/styles.css`),
@@ -149,7 +157,7 @@ async function lint() {
 }
 
 async function format() {
-  console.log('── format ──');
+  console.log('━━ format ━━');
   const files = ['index.html', 'styles.css', 'paper.js', 'app.js'];
   for (const f of files) {
     const p = `${SRC}/${f}`;
@@ -162,23 +170,24 @@ async function format() {
 }
 
 async function build() {
-  console.log('── build ──');
+  console.log('━━ build ━━');
   const ok = await validate();
   if (!ok) { console.error('  ✗ validation failed'); return false; }
 
   // Copy src/www → app/src/main/assets/www/
   const srcFiles = ['index.html', 'styles.css', 'paper.js', 'app.js'];
   for (const f of srcFiles) {
-    const content = await Bun.file(`${SRC}/${f}`).text();
-    await Bun.write(`${DEST}/${f}`, content);
-    console.log(`  ✓ ${f} → ${DEST}/${f}`);
+    const content = read(`${SRC}/${f}`);
+    if (content) {
+      write(`${DEST}/${f}`, content);
+    }
   }
   console.log('  ✓ build complete');
   return true;
 }
 
 async function test() {
-  console.log('── test ──');
+  console.log('━━ test ━━');
   const ok = await validate();
   if (!ok) return false;
   const lintOk = await lint();
@@ -187,7 +196,7 @@ async function test() {
   return true;
 }
 
-/* ── run ──────────────────────────────────────────────────────── */
+/* ━━ run ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const commands = { validate, lint, format, build, test };
 const fn = commands[cmd];
 if (!fn) {
@@ -195,5 +204,7 @@ if (!fn) {
   process.exit(1);
 }
 
-const result = await fn();
-process.exit(result ? 0 : 1);
+fn().then(result => process.exit(result ? 0 : 1)).catch(err => {
+  console.error(`Command failed: ${err.message}`);
+  process.exit(1);
+});

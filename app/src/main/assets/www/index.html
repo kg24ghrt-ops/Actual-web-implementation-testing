@@ -2,50 +2,195 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-  <meta name="color-scheme" content="light" />
-  <title>no home work</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#d4d4d8" />
+  <meta name="description" content="Realistic lined notebook paper with DIN 476 dimensions. Pinch to zoom, drag to pan." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>No Home Work - Lined Notebook Paper</title>
+  
+  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom styles -->
   <link rel="stylesheet" href="styles.css" />
+  
+  <!-- Inline critical CSS for faster loading -->
+  <style>
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    
+    /* Custom animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(10px); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+    .animate-fade-out { animation: fadeOut 0.3s ease-out; }
+    .animate-spin { animation: spin 1s linear infinite; }
+    
+    /* Prevent overscroll on iOS */
+    html, body { 
+      overscroll-behavior: none; 
+      -webkit-overscroll-behavior: none; 
+    }
+    
+    /* Smooth scrolling */
+    html { 
+      scroll-behavior: smooth; 
+    }
+    
+    /* Custom scrollbar for webkit */
+    ::-webkit-scrollbar { 
+      width: 8px; 
+      height: 8px; 
+    }
+    ::-webkit-scrollbar-track { 
+      background: transparent; 
+    }
+    ::-webkit-scrollbar-thumb { 
+      background: #888; 
+      border-radius: 4px; 
+    }
+    ::-webkit-scrollbar-thumb:hover { 
+      background: #555; 
+    }
+  </style>
+  
+  <!-- Preconnect to CDN for faster loading -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
 </head>
-<body class="h-full overflow-hidden bg-zinc-200 select-none">
 
-  <!-- Toolbar -->
-  <div class="fixed inset-x-0 top-0 z-50 flex items-center gap-3 px-4 h-12 bg-zinc-900 shadow-lg">
-    <label class="sr-only" for="formatSelect">Paper format</label>
-    <select id="formatSelect"
-      class="bg-zinc-800 text-zinc-200 text-xs font-semibold border border-zinc-600 rounded px-2 py-1.5 outline-none focus:ring-2 focus:ring-emerald-500">
-      <option value="A4" selected>A4 — 210 &times; 297 mm</option>
-      <option value="A5">A5 — 148 &times; 210 mm</option>
-    </select>
+<body class="h-full overflow-hidden bg-zinc-200 select-none transition-colors duration-300">
 
-    <div class="flex items-center gap-1 ml-auto">
-      <button id="zoomOut"
-        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition"
-        title="Zoom out">&minus;</button>
-      <span id="zoomLabel"
-        class="min-w-[48px] text-right text-xs font-mono text-zinc-400 tabular-nums">100%</span>
-      <button id="zoomIn"
-        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition"
-        title="Zoom in">+</button>
-      <button id="resetView"
-        class="h-8 px-3 ml-1 rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-xs font-semibold active:bg-zinc-600 transition"
-        title="Reset view">Reset</button>
-    </div>
+  <!-- Loading Indicator -->
+  <div id="loadingIndicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
   </div>
 
+  <!-- Toolbar -->
+  <header class="fixed inset-x-0 top-0 z-50 flex items-center gap-3 px-4 h-14 bg-zinc-900 shadow-lg transition-all duration-300">
+    <!-- Logo / App Name -->
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 flex items-center justify-center rounded bg-emerald-600 text-white font-bold text-lg">
+        NHW
+      </div>
+      <div class="hidden sm:block">
+        <h1 class="text-sm font-semibold text-zinc-200 tracking-tight">No Home Work</h1>
+        <p class="text-xs text-zinc-500 -mt-0.5">v2.0.0</p>
+      </div>
+    </div>
+
+    <!-- Format Selector -->
+    <div class="flex items-center gap-2 ml-4">
+      <label class="sr-only" for="formatSelect">Paper format</label>
+      <select id="formatSelect"
+        class="bg-zinc-800 text-zinc-200 text-xs font-semibold border border-zinc-600 rounded px-3 py-1.5 outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200 hover:bg-zinc-700">
+        <option value="A4" selected>A4 — 210 × 297 mm</option>
+        <option value="A5">A5 — 148 × 210 mm</option>
+        <option value="A3">A3 — 297 × 420 mm</option>
+        <option value="Letter">Letter — 8.5 × 11 in</option>
+      </select>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="flex items-center gap-2 ml-4">
+      <button id="themeToggle"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Toggle theme (T)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- Zoom Controls -->
+    <div class="flex items-center gap-1">
+      <button id="zoomOut"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Zoom out (-)">&minus;</button>
+      <span id="zoomLabel"
+        class="min-w-[52px] text-right text-xs font-mono text-zinc-400 tabular-nums">100%</span>
+      <button id="zoomIn"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Zoom in (+)">+</button>
+    </div>
+
+    <!-- Fullscreen Toggle -->
+    <div class="flex items-center gap-1 ml-2">
+      <button id="fullscreenToggle"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Toggle fullscreen (F)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Reset View -->
+    <div class="flex items-center gap-1 ml-1">
+      <button id="resetView"
+        class="h-8 px-3 rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-xs font-semibold active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Reset view (R)">Reset</button>
+    </div>
+
+    <!-- Info Button -->
+    <div class="flex items-center gap-1 ml-1">
+      <button id="infoToggle"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 active:bg-zinc-600 transition hover:bg-zinc-700"
+        title="Toggle info">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Info Panel (Hidden by default) -->
+  <aside id="infoPanel" class="fixed bottom-4 right-4 z-40 bg-zinc-900 bg-opacity-90 backdrop-blur-md rounded-lg p-4 max-w-xs shadow-xl transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="flex justify-between items-start mb-2">
+      <h3 class="text-sm font-semibold text-zinc-200">About</h3>
+      <button id="infoClose" class="text-zinc-500 hover:text-zinc-300 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <p class="text-xs text-zinc-400 leading-relaxed">
+      Realistic lined notebook paper with true DIN 476 dimensions.
+      <span class="block mt-1">Pinch to zoom, drag to pan. Double-tap to toggle zoom.</span>
+      <span class="block mt-1">Keyboard: +/- to zoom, R to reset, T for theme, F for fullscreen</span>
+    </p>
+    <div class="mt-3 pt-3 border-t border-zinc-700">
+      <p class="text-xs text-zinc-500">v2.0.0 - Advanced Rendering Engine</p>
+    </div>
+  </aside>
+
   <!-- Viewport (pan / pinch area) -->
-  <div id="viewport"
-    class="absolute top-12 inset-x-0 bottom-0 overflow-hidden cursor-grab touch-none"
+  <main id="viewport"
+    class="absolute top-14 inset-x-0 bottom-0 overflow-hidden cursor-grab touch-none"
     style="background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.10), transparent 70%), #d4d4d8;">
 
     <!-- GPU-composited paper container -->
     <div id="paperContainer"
       class="absolute origin-top-left will-change-transform"
-      style="backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      style="backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-origin: 0 0;">
 
       <!-- The paper surface -->
-      <div id="paper" class="paper paper-a4">
+      <div id="paper" class="paper paper-a4 bg-white">
 
         <!-- Subtle paper texture noise -->
         <div class="absolute inset-0 pointer-events-none z-[1]"
@@ -68,6 +213,7 @@
           </header>
           <section class="text-sm leading-relaxed text-zinc-700" style="font-family:Georgia,serif;max-width:52ch;text-align:justify;hyphens:auto;-webkit-hyphens:auto;">
             <p>This is a realistic lined notebook page rendered at true DIN 476 dimensions. The horizontal rules are spaced at standard 8&nbsp;mm intervals, with a red vertical margin line at 25&nbsp;mm from the left edge. Pinch to zoom, drag to pan.</p>
+            <p class="mt-4">Double-tap to toggle between 100% and 200% zoom. Use the buttons above or keyboard shortcuts for quick navigation.</p>
           </section>
         </div>
 
@@ -79,9 +225,98 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"></div>
+
+  <!-- Scripts -->
   <script src="paper.js"></script>
   <script src="app.js"></script>
+  
+  <!-- Initialize theme toggle -->
+  <script>
+    (function() {
+      'use strict';
+      
+      // Theme toggle functionality
+      const themeToggle = document.getElementById('themeToggle');
+      const fullscreenToggle = document.getElementById('fullscreenToggle');
+      const infoToggle = document.getElementById('infoToggle');
+      const infoPanel = document.getElementById('infoPanel');
+      const infoClose = document.getElementById('infoClose');
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+          if (window.NoHomeWorkApp && window.NoHomeWorkApp.theme) {
+            const newTheme = window.NoHomeWorkApp.theme.toggle();
+            showToast(`Theme: ${newTheme}`);
+          }
+        });
+      }
+      
+      if (fullscreenToggle) {
+        fullscreenToggle.addEventListener('click', function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(console.warn);
+          } else {
+            document.exitFullscreen();
+          }
+        });
+      }
+      
+      if (infoToggle && infoPanel) {
+        infoToggle.addEventListener('click', function() {
+          const isVisible = infoPanel.classList.contains('opacity-100');
+          if (isVisible) {
+            infoPanel.classList.remove('opacity-100');
+            infoPanel.classList.add('opacity-0');
+            infoPanel.classList.add('pointer-events-none');
+          } else {
+            infoPanel.classList.remove('opacity-0', 'pointer-events-none');
+            infoPanel.classList.add('opacity-100');
+          }
+        });
+      }
+      
+      if (infoClose && infoPanel) {
+        infoClose.addEventListener('click', function() {
+          infoPanel.classList.remove('opacity-100');
+          infoPanel.classList.add('opacity-0');
+          infoPanel.classList.add('pointer-events-none');
+        });
+      }
+      
+      function showToast(message, duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        
+        const existing = container.querySelector('.toast');
+        if (existing) existing.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast bg-zinc-900 text-white px-4 py-2 rounded shadow-lg animate-fade-in pointer-events-auto';
+        toast.textContent = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('animate-fade-out');
+          setTimeout(() => toast.remove(), 300);
+        }, duration);
+      }
+      
+      // Hide loading indicator when Paper.js is ready
+      const checkReady = setInterval(function() {
+        if (document.documentElement.dataset.ready === 'true') {
+          clearInterval(checkReady);
+          const loading = document.getElementById('loadingIndicator');
+          if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => loading.remove(), 300);
+          }
+        }
+      }, 100);
+    })();
+  </script>
 </body>
 </html>
