@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+  <meta name="color-scheme" content="light" />
+  <title>no home work</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="h-full overflow-hidden bg-zinc-200 select-none">
+
+  <!-- Toolbar -->
+  <div class="fixed inset-x-0 top-0 z-50 flex items-center gap-3 px-4 h-12 bg-zinc-900 shadow-lg">
+    <label class="sr-only" for="formatSelect">Paper format</label>
+    <select id="formatSelect"
+      class="bg-zinc-800 text-zinc-200 text-xs font-semibold border border-zinc-600 rounded px-2 py-1.5 outline-none focus:ring-2 focus:ring-emerald-500">
+      <option value="A4" selected>A4 — 210 &times; 297 mm</option>
+      <option value="A5">A5 — 148 &times; 210 mm</option>
+    </select>
+
+    <div class="flex items-center gap-1 ml-auto">
+      <button id="zoomOut"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition"
+        title="Zoom out">&minus;</button>
+      <span id="zoomLabel"
+        class="min-w-[48px] text-right text-xs font-mono text-zinc-400 tabular-nums">100%</span>
+      <button id="zoomIn"
+        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition"
+        title="Zoom in">+</button>
+      <button id="resetView"
+        class="h-8 px-3 ml-1 rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-xs font-semibold active:bg-zinc-600 transition"
+        title="Reset view">Reset</button>
+    </div>
+  </div>
+
+  <!-- Viewport (pan / pinch area) -->
+  <div id="viewport"
+    class="absolute top-12 inset-x-0 bottom-0 overflow-hidden cursor-grab touch-none"
+    style="background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.10), transparent 70%), #d4d4d8;">
+
+    <!-- GPU-composited paper container -->
+    <div id="paperContainer"
+      class="absolute origin-top-left will-change-transform"
+      style="backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+
+      <!-- The paper surface -->
+      <div id="paper" class="paper paper-a4">
+
+        <!-- Subtle paper texture noise -->
+        <div class="absolute inset-0 pointer-events-none z-[1]"
+          style="background:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E');opacity:.45;mix-blend-mode:multiply;"></div>
+
+        <!-- Ruled lines layer (horizontal blue + top margin + red vertical margin) -->
+        <div id="ruledLines" class="absolute inset-0 pointer-events-none z-[2]"></div>
+
+        <!-- Content sits ON TOP of lines, aligned to the top margin -->
+        <div id="paperContent"
+          class="relative z-[3]"
+          style="padding-top:var(--top-margin);padding-left:var(--left-margin);padding-right:32px;padding-bottom:48px;">
+          <header class="mb-10">
+            <h1 class="text-3xl font-bold text-zinc-900 tracking-tight leading-tight" style="font-family:Georgia,serif;">
+              No Home Work
+            </h1>
+            <p class="mt-1.5 text-[11px] font-semibold uppercase tracking-widest text-zinc-400" style="font-family:system-ui,sans-serif;">
+              Lined notebook paper &mdash; <span id="formatLabel">A4</span> DIN 476
+            </p>
+          </header>
+          <section class="text-sm leading-relaxed text-zinc-700" style="font-family:Georgia,serif;max-width:52ch;text-align:justify;hyphens:auto;-webkit-hyphens:auto;">
+            <p>This is a realistic lined notebook page rendered at true DIN 476 dimensions. The horizontal rules are spaced at standard 8&nbsp;mm intervals, with a red vertical margin line at 25&nbsp;mm from the left edge. Pinch to zoom, drag to pan.</p>
+          </section>
+        </div>
+
+        <!-- Paper edge shadows (depth cues) -->
+        <div class="absolute top-0 inset-x-0 h-[2px] z-[4] pointer-events-none" style="background:linear-gradient(180deg,rgba(0,0,0,.06),transparent);"></div>
+        <div class="absolute top-0 left-0 bottom-0 w-[2px] z-[4] pointer-events-none" style="background:linear-gradient(90deg,rgba(0,0,0,.04),transparent);"></div>
+        <div class="absolute top-0 right-0 bottom-0 w-[3px] z-[4] pointer-events-none" style="background:linear-gradient(270deg,rgba(0,0,0,.08),transparent);"></div>
+        <div class="absolute bottom-0 inset-x-0 h-[4px] z-[4] pointer-events-none" style="background:linear-gradient(0deg,rgba(0,0,0,.10),transparent);"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="paper.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

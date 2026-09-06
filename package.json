@@ -1,0 +1,15 @@
+{
+  "name": "no-home-work",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "validate": "bun run build.js validate",
+    "lint": "bun run build.js lint",
+    "format": "bun run build.js format",
+    "build": "bun run build.js build",
+    "test": "bun run build.js test"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}

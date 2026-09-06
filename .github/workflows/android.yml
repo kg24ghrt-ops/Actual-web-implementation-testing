@@ -14,8 +14,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  web-ci:
+    name: Web Assets (Bun)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Validate web assets
+        run: bun run validate
+
+      - name: Lint web assets
+        run: bun run lint
+
+      - name: Build web assets
+        run: bun run build
+
+      - name: Test web assets
+        run: bun run test
+
   debug:
     name: Debug APK
+    needs: web-ci
     runs-on: ubuntu-latest
 
     steps:
@@ -46,6 +77,7 @@ jobs:
 
   release:
     name: Release APK
+    needs: web-ci
     runs-on: ubuntu-latest
 
     steps:

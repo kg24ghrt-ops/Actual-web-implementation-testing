@@ -23,10 +23,12 @@ misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
-
-
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
 # Android Profiling
 *.hprof
+
+# Bun / Node
+node_modules/
+*.tsbuildinfo
