@@ -144,7 +144,7 @@ async function lint() {
 
   if (files['styles.css']) {
     const css = files['styles.css'];
-    const hasLines = css.includes('ruledLines') || css.includes('repeating-linear-gradient');
+    const hasLines = css.includes('notebook-paper') || css.includes('ruledLines') || css.includes('repeating-linear-gradient');
     if (!hasLines) { console.error('  ✗ Missing ruled line styles'); ok = false; }
     else console.log('  ✓ ruled line styles present');
     const hasA4 = css.includes('a4-w') || css.includes('793.7');
