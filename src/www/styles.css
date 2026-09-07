@@ -1,13 +1,16 @@
 /* ========================================================================
- * styles.css - Lined Notebook Paper Styles
+ * styles.css - Notebook Paper Styles
  * 
- * This file contains all the CSS styles for the realistic lined notebook
- * paper application, including:
+ * This file contains CSS styles for the No Home Work application.
+ * The photorealistic lined notebook paper appearance is provided by the
+ * notebook-paper-css library (https://github.com/kg24ghrt-ops/notebook-paper-css)
+ * 
+ * This file contains:
  *   - DIN 476 / ISO 216 paper dimension definitions
- *   - Ruled line styles (horizontal blue + red vertical margin)
- *   - Paper surface styling with realistic texture
+ *   - Paper surface styling
  *   - Responsive design for all screen sizes
  *   - Print styles for physical output
+ *   - Theme support (light/dark/sepia)
  * ======================================================================== */
 
 /* ========================================================================
@@ -42,14 +45,13 @@
   --left-margin: 94.5px;  /* 25mm at 96dpi */
   --bottom-margin: 61.4px; /* 16mm at 96dpi */
   
-  /* Colors */
+  /* Colors - Light theme */
   --paper-bg: #fdfbf7;
-  --line-color: #c5d5e8;
-  --margin-line-color: #e8b4b8;
   --text-color: #18181b;
   --secondary-text: #71717a;
   --toolbar-bg: #18181b;
   --toolbar-text: #fafafa;
+  --border-color: #e4e4e7;
   
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
@@ -73,12 +75,25 @@
  * ======================================================================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper-bg: #f4f4f5;
-    --line-color: #475569;
-    --margin-line-color: #86efac;
-    --text-color: #18181b;
-    --secondary-text: #71717a;
+    --paper-bg: #09090b;
+    --text-color: #fafafa;
+    --secondary-text: #a1a1aa;
+    --toolbar-bg: #27272a;
+    --toolbar-text: #f4f4f5;
+    --border-color: #3f3f46;
   }
+}
+
+/* ========================================================================
+ * Theme: Sepia (Warm/Writing Mode)
+ * ======================================================================== */
+[data-theme="sepia"] {
+  --paper-bg: #fef3c7;
+  --text-color: #78350f;
+  --secondary-text: #92400e;
+  --toolbar-bg: #78350f;
+  --toolbar-text: #fef3c7;
+  --border-color: #d97706;
 }
 
 /* ========================================================================
@@ -88,7 +103,6 @@
   position: relative;
   width: var(--paper-w);
   height: var(--paper-h);
-  background: var(--paper-bg);
   box-shadow:
     var(--shadow-sm),
     var(--shadow-md),
@@ -96,7 +110,7 @@
     inset 0 0 80px rgba(0, 0, 0, 0.012);
   border-radius: 1px;
   overflow: hidden;
-  transition: background var(--transition-slow);
+  transition: background var(--transition-slow), box-shadow var(--transition-slow);
 }
 
 /* Paper format classes */
@@ -118,53 +132,6 @@
 .paper-letter {
   --paper-w: var(--letter-w);
   --paper-h: var(--letter-h);
-}
-
-/* ========================================================================
- * Ruled Lines (CSS-only fallback + SVG enhancement)
- * ======================================================================== */
-#ruledLines {
-  /* Red vertical margin line */
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent calc(var(--left-margin) - 0.75px),
-      var(--margin-line-color) calc(var(--left-margin) - 0.75px),
-      var(--margin-line-color) calc(var(--left-margin) + 0.75px),
-      transparent calc(var(--left-margin) + 0.75px)
-    ),
-    /* Blue horizontal rules (start below top margin) */
-    repeating-linear-gradient(
-      180deg,
-      transparent,
-      transparent var(--top-margin),
-      var(--line-color) var(--top-margin),
-      var(--line-color) calc(var(--top-margin) + 1px),
-      transparent calc(var(--top-margin) + 1px),
-      transparent calc(var(--top-margin) + var(--line-gap))
-    );
-}
-
-/* ========================================================================
- * Paper Texture Overlay
- * ======================================================================== */
-.paper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: 
-    /* Subtle paper grain */
-    linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.02) 0%,
-      rgba(0, 0, 0, 0.01) 50%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
-  background-size: 100px 100px;
-  opacity: 0.3;
-  z-index: 0;
 }
 
 /* ========================================================================
@@ -219,6 +186,7 @@ header {
   color: var(--toolbar-text);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 50;
+  transition: background var(--transition-slow), color var(--transition-slow);
 }
 
 header select,
@@ -261,9 +229,8 @@ header button:active {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background: 
-    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.1), transparent 70%),
-    #d4d4d8;
+  background: #f8f9fa;
+  transition: background var(--transition-slow);
 }
 
 #paperContainer {
@@ -277,7 +244,7 @@ header button:active {
 }
 
 /* ========================================================================
- * Paper Edge Shadows
+ * Paper Edge Shadows (depth cues)
  * ======================================================================== */
 .paper::after {
   content: '';
@@ -292,6 +259,18 @@ header button:active {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================================================
+ * Handwriting Canvas
+ * ======================================================================== */
+#handwritingCanvas {
+  cursor: crosshair;
+}
+
+#handwritingCanvas:disabled {
+  cursor: default;
+  pointer-events: none;
 }
 
 /* ========================================================================
@@ -398,6 +377,11 @@ header button:active {
   }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .animate-fade-in {
   animation: fadeIn var(--transition-slow) ease-out;
 }
@@ -408,6 +392,10 @@ header button:active {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 /* ========================================================================
@@ -450,11 +438,6 @@ header button:active {
     background: white !important;
   }
   
-  /* Ensure ruled lines are visible */
-  #ruledLines {
-    opacity: 1 !important;
-  }
-  
   /* Adjust margins for printing */
   #paperContent {
     padding-top: var(--top-margin) !important;
@@ -473,28 +456,6 @@ header button:active {
       0 1px 3px rgba(0, 0, 0, 0.2),
       0 4px 12px rgba(0, 0, 0, 0.15),
       0 12px 36px rgba(0, 0, 0, 0.12);
-  }
-  
-  #ruledLines {
-    /* More visible lines in high contrast */
-    background:
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent calc(var(--left-margin) - 1px),
-        var(--margin-line-color) calc(var(--left-margin) - 1px),
-        var(--margin-line-color) calc(var(--left-margin) + 1px),
-        transparent calc(var(--left-margin) + 1px)
-      ),
-      repeating-linear-gradient(
-        180deg,
-        transparent,
-        transparent var(--top-margin),
-        var(--line-color) var(--top-margin),
-        var(--line-color) calc(var(--top-margin) + 1.5px),
-        transparent calc(var(--top-margin) + 1.5px),
-        transparent calc(var(--top-margin) + var(--line-gap))
-      );
   }
 }
 
@@ -589,45 +550,83 @@ a:focus-visible {
 }
 
 /* ========================================================================
- * Theme Classes
+ * Loading Indicator
  * ======================================================================== */
-.bg-zinc-100 {
-  --paper-bg: #f4f4f5;
+#loadingIndicator {
+  background: rgba(0, 0, 0, 0.5);
 }
 
-.bg-zinc-900 {
-  --toolbar-bg: #18181b;
-  --toolbar-text: #f4f4f5;
+#loadingIndicator .animate-spin {
+  border-bottom-color: white;
+  border-right-color: white;
+  border-top-color: transparent;
+  border-left-color: transparent;
 }
 
-.bg-white {
-  --paper-bg: #ffffff;
+/* ========================================================================
+ * Handwriting Text Elements
+ * ======================================================================== */
+.handwriting-text {
+  position: absolute;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  pointer-events: auto;
+  z-index: 20;
 }
 
-.bg-amber-50 {
-  --paper-bg: #fffbeb;
+.handwriting-text:hover {
+  outline: 2px dashed #10b981;
+  outline-offset: 4px;
 }
 
-.bg-amber-100 {
-  --paper-bg: #fef3c7;
+.handwriting-text:active {
+  outline: 2px solid #10b981;
+  outline-offset: 4px;
 }
 
-.bg-amber-900 {
-  --toolbar-bg: #78350f;
-  --toolbar-text: #fef3c7;
+.handwriting-text input {
+  position: absolute;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  resize: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  cursor: text;
+  touch-action: auto;
 }
 
-.text-zinc-900 {
-  --text-color: #18181b;
-  --secondary-text: #71717a;
+.handwriting-text input:focus {
+  outline: none;
 }
 
-.text-zinc-100 {
-  --text-color: #f4f4f5;
-  --secondary-text: #d4d4d8;
+/* ========================================================================
+ * Format-specific overrides for notebook-paper-css
+ * ======================================================================== */
+.paper-a4.notebook-paper {
+  width: var(--a4-w);
+  height: var(--a4-h);
 }
 
-.text-amber-900 {
-  --text-color: #78350f;
-  --secondary-text: #92400e;
+.paper-a5.notebook-paper {
+  width: var(--a5-w);
+  height: var(--a5-h);
+}
+
+.paper-a3.notebook-paper {
+  width: var(--a3-w);
+  height: var(--a3-h);
+}
+
+.paper-letter.notebook-paper {
+  width: var(--letter-w);
+  height: var(--letter-h);
 }

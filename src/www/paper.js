@@ -8,7 +8,7 @@
  *   - Double-tap to zoom toggle
  *   - Edge resistance and boundary constraints
  *   - Format switching (A4/A5) with proper dimensions
- *   - SVG-based ruled lines for crisp rendering at any scale
+ *   - Photorealistic paper via notebook-paper-css library
  *   - Touch action optimization for mobile
  */
 (function() {
@@ -18,10 +18,10 @@
    * ISO 216 / DIN 476 Paper Definitions (mm)
    * ======================================================================== */
   const PAPERS = {
-    A4: { mmW: 210, mmH: 297, label: 'A4', description: '210 × 297 mm' },
-    A5: { mmW: 148, mmH: 210, label: 'A5', description: '148 × 210 mm' },
-    A3: { mmW: 297, mmH: 420, label: 'A3', description: '297 × 420 mm' },
-    Letter: { mmW: 215.9, mmH: 279.4, label: 'Letter', description: '8.5 × 11 in' }
+    A4: { mmW: 210, mmH: 297, label: 'A4', description: '210 \u00d7 297 mm' },
+    A5: { mmW: 148, mmH: 210, label: 'A5', description: '148 \u00d7 210 mm' },
+    A3: { mmW: 297, mmH: 420, label: 'A3', description: '297 \u00d7 420 mm' },
+    Letter: { mmW: 215.9, mmH: 279.4, label: 'Letter', description: '8.5 \u00d7 11 in' }
   };
 
   const DPI = 96;
@@ -85,7 +85,7 @@
   /* ========================================================================
    * DOM References
    * ======================================================================== */
-  let viewport, container, paperEl, paperContent, ruledLines;
+  let viewport, container, paperEl, paperContent;
   let formatSelect, formatLabel, zoomLabel, zoomInBtn, zoomOutBtn, resetBtn;
   let toolbar;
 
@@ -151,53 +151,8 @@
   }
 
   /* ========================================================================
-   * SVG Ruled Lines Generation
-   * ======================================================================== */
-  function renderRuledLines(format) {
-    const p = PAPERS[format];
-    if (!p) return;
-    
-    const wPx = mmToPx(p.mmW);
-    const hPx = mmToPx(p.mmH);
-    const lineGap = mmToPx(LINE_GAP_MM);
-    const topM = mmToPx(TOP_MARGIN_MM);
-    const leftM = mmToPx(LEFT_MARGIN_MM);
-    const bottomM = mmToPx(BOTTOM_MARGIN_MM);
-
-    const lines = [];
-    
-    // Generate horizontal ruled lines
-    let y = topM;
-    while (y < hPx - bottomM) {
-      lines.push(
-        `<line x1="0" y1="${y.toFixed(1)}" x2="${wPx.toFixed(1)}" y2="${y.toFixed(1)}" ` +
-        `stroke="#c5d5e8" stroke-width="0.8"/>`
-      );
-      y += lineGap;
-    }
-    
-    // Top horizontal margin line
-    lines.push(
-      `<line x1="0" y1="${topM.toFixed(1)}" x2="${wPx.toFixed(1)}" y2="${topM.toFixed(1)}" ` +
-      `stroke="#c5d5e8" stroke-width="1.2"/>`
-    );
-    
-    // Red vertical margin line
-    lines.push(
-      `<line x1="${leftM.toFixed(1)}" y1="0" x2="${leftM.toFixed(1)}" y2="${hPx.toFixed(1)}" ` +
-      `stroke="#e8b4b8" stroke-width="1.0"/>`
-    );
-
-    // Create SVG with optimized attributes
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${wPx}" height="${hPx}" shape-rendering="crispEdges">${lines.join('')}</svg>`;
-    
-    if (ruledLines) {
-      ruledLines.innerHTML = svg;
-    }
-  }
-
-  /* ========================================================================
    * Apply Paper Format
+   * NOTE: Ruled lines are now handled by notebook-paper-css library
    * ======================================================================== */
   function applyFormat(fmt) {
     const p = PAPERS[fmt];
@@ -210,8 +165,8 @@
     paperEl.style.width = `${dims.width}px`;
     paperEl.style.height = `${dims.height}px`;
     
-    // Update CSS classes
-    paperEl.className = `paper paper-${fmt.toLowerCase()}`;
+    // Update CSS classes for notebook-paper-css library
+    paperEl.className = `notebook-paper ${fmt.toLowerCase()} texture paper-${fmt.toLowerCase()}`;
     
     // Update format label
     if (formatLabel) {
@@ -220,9 +175,6 @@
     if (formatSelect) {
       formatSelect.value = fmt;
     }
-    
-    // Regenerate ruled lines
-    renderRuledLines(fmt);
     
     // Recenter paper after format change
     centerPaper();
@@ -835,12 +787,6 @@
       return paperContent ? paperContent.innerHTML : '';
     },
     
-    setRulings: function(html) {
-      if (ruledLines) {
-        ruledLines.innerHTML = html;
-      }
-    },
-    
     getDimensions: function(format) {
       return getPaperDimensions(format || state.format);
     },
@@ -868,7 +814,6 @@
     container = document.getElementById('paperContainer');
     paperEl = document.getElementById('paper');
     paperContent = document.getElementById('paperContent');
-    ruledLines = document.getElementById('ruledLines');
     formatSelect = document.getElementById('formatSelect');
     formatLabel = document.getElementById('formatLabel');
     zoomLabel = document.getElementById('zoomLabel');
@@ -888,7 +833,7 @@
     // Mark as ready
     document.documentElement.dataset.ready = 'true';
     
-    console.log('Paper.js initialized - Advanced rendering engine ready');
+    console.log('Paper.js initialized - Advanced rendering engine ready with notebook-paper-css');
   }
 
   /* ========================================================================
