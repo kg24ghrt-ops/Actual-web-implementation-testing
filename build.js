@@ -184,6 +184,20 @@ async function build() {
       write(`${DEST}/${f}`, content);
     }
   }
+  
+  // Copy css/lib directory recursively
+  const cssLibSrc = `${SRC}/css/lib`;
+  const cssLibDest = `${DEST}/css`;
+  if (fs.existsSync(cssLibSrc)) {
+    // Remove existing css/lib in dest if it exists
+    const existingLib = `${DEST}/css/lib`;
+    if (fs.existsSync(existingLib)) {
+      fs.rmSync(existingLib, { recursive: true, force: true });
+    }
+    // Copy the entire css/lib directory
+    copyDir(cssLibSrc, `${cssLibDest}/lib`);
+    console.log('  ✓ copied css/lib directory');
+  }
   console.log('  ✓ build complete');
   return true;
 }
@@ -196,6 +210,30 @@ async function test() {
   if (!lintOk) return false;
   console.log('  ✓ all tests passed');
   return true;
+}
+
+/* ========================================================================
+ * Helper: Recursively copy directory
+ * ======================================================================== */
+function copyDir(src, dest) {
+  if (!fs.existsSync(src)) return;
+  
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      const content = fs.readFileSync(srcPath, 'utf8');
+      fs.writeFileSync(destPath, content, 'utf8');
+    }
+  }
 }
 
 /* NEW: Fetch latest notebook-paper-css from GitHub releases */

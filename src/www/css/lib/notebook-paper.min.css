@@ -1,0 +1,132 @@
+/*! notebook-paper-css v1.2.0 - Photorealistic lined notebook paper styles */
+/* Scanned paper texture and ruled lines for A4 notebook paper */
+
+/* A4 Paper - 210mm x 297mm */
+.notebook-paper.a4,
+.paper-a4 {
+  position: relative;
+  width: 793.7px;
+  height: 1122.5px;
+  background-color: #fdfbf7;
+  background-image: 
+    /* Paper texture - subtle noise/grain */
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.01) 100%),
+    /* Very subtle grid for paper fiber texture */
+    linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.01) 50%, rgba(255,255,255,0.03) 100%),
+    linear-gradient(0deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.01) 50%, rgba(255,255,255,0.03) 100%);
+  background-size: 100px 100px, 3mm 3mm, 3mm 3mm;
+  overflow: hidden;
+}
+
+/* Ruled lines for A4 */
+.notebook-paper.a4::before,
+.paper-a4::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  
+  /* Horizontal ruled lines - blue, 8mm spacing */
+  background: 
+    /* Top margin - 30mm */
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 113.4px,
+      #c5d5e8 113.4px,
+      #c5d5e8 114.2px,
+      transparent 114.2px,
+      transparent 143.64px
+    );
+}
+
+/* Red vertical margin line at 25mm */
+.notebook-paper.a4::after,
+.paper-a4::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 94.5px;
+  bottom: 0;
+  width: 1px;
+  background: #e8b4b8;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Texture class - adds scanned paper appearance */
+.notebook-paper.a4.texture,
+.paper-a4.texture {
+  background-color: #fdfbf7;
+  background-image: 
+    /* Subtle paper grain texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E"),
+    /* Faint grid for paper fiber */
+    linear-gradient(90deg, rgba(200,200,200,0.05) 0%, transparent 50%, rgba(200,200,200,0.05) 100%),
+    linear-gradient(0deg, rgba(200,200,200,0.05) 0%, transparent 50%, rgba(200,200,200,0.05) 100%);
+  background-size: 100px 100px, 2mm 2mm, 2mm 2mm;
+}
+
+/* A5 Paper - 148mm x 210mm */
+.notebook-paper.a5,
+.paper-a5 {
+  position: relative;
+  width: 559.4px;
+  height: 793.7px;
+  background-color: #fdfbf7;
+  background-image: 
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.01) 100%),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.01) 50%, rgba(255,255,255,0.03) 100%),
+    linear-gradient(0deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.01) 50%, rgba(255,255,255,0.03) 100%);
+  background-size: 100px 100px, 3mm 3mm, 3mm 3mm;
+  overflow: hidden;
+}
+
+.notebook-paper.a5::before,
+.paper-a5::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: 
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 113.4px,
+      #c5d5e8 113.4px,
+      #c5d5e8 114.2px,
+      transparent 114.2px,
+      transparent 143.64px
+    );
+}
+
+.notebook-paper.a5::after,
+.paper-a5::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 94.5px;
+  bottom: 0;
+  width: 1px;
+  background: #e8b4b8;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.notebook-paper.a5.texture,
+.paper-a5.texture {
+  background-color: #fdfbf7;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, rgba(200,200,200,0.05) 0%, transparent 50%, rgba(200,200,200,0.05) 100%),
+    linear-gradient(0deg, rgba(200,200,200,0.05) 0%, transparent 50%, rgba(200,200,200,0.05) 100%);
+  background-size: 100px 100px, 2mm 2mm, 2mm 2mm;
+}
