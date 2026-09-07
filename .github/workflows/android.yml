@@ -32,6 +32,27 @@ jobs:
       - name: Install deps
         run: bun install --frozen-lockfile
 
+      # NEW: Download latest notebook-paper-css from GitHub
+      - name: Download notebook-paper-css library
+        run: |
+          # Create lib directory
+          mkdir -p src/www/css/lib
+          
+          # Download the latest notebook-paper-css release
+          LIB_URL="https://github.com/kg24ghrt-ops/notebook-paper-css/releases/latest/download/notebook-paper.min.css"
+          curl -sL -o src/www/css/lib/notebook-paper.min.css "$LIB_URL" || {
+            echo "::error::Failed to download notebook-paper-css. Using cached version if available."
+            exit 1
+          }
+          
+          # Verify the file was downloaded
+          if [ ! -f "src/www/css/lib/notebook-paper.min.css" ]; then
+            echo "::error::notebook-paper.min.css not found after download"
+            exit 1
+          fi
+          
+          echo "::notice::Successfully downloaded notebook-paper-css v$(grep -oP '(?<=v)[0-9.]+' src/www/css/lib/notebook-paper.min.css | head -1 || echo 'latest')"
+
       - name: Validate web assets
         run: bun run validate
 
@@ -43,6 +64,13 @@ jobs:
 
       - name: Test web assets
         run: bun run test
+
+      - name: Upload built lib directory as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: notebook-paper-css
+          path: src/www/css/lib/notebook-paper.min.css
+          retention-days: 30
 
   debug:
     name: Debug APK

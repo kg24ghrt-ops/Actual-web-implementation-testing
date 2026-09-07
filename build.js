@@ -8,17 +8,19 @@
  *   format    — Format all source files
  *   build     — Validate + minify → copy to app/src/main/assets/www/
  *   test      — Run validation tests (exit 0 = pass)
+ *   fetch-lib — Download latest notebook-paper-css from GitHub releases
  */
 
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const SRC  = './src/www';
 const DEST = './app/src/main/assets/www';
 
 const cmd = process.argv[2] || 'validate';
 
-/* ━━ helpers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* ━━━━ helpers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function read(p) {
   try { return fs.readFileSync(p, 'utf8'); }
   catch (e) { console.error(`  ✗ cannot read ${p}`); return null; }
@@ -85,7 +87,7 @@ function stripComments(html) {
   return html.replace(/<!--[\s\S]*?-->/g, '');
 }
 
-/* ━━ commands ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* ━━━━ commands ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 async function validate() {
   console.log('━━ validate ━━');
   const files = {
@@ -145,7 +147,7 @@ async function lint() {
   if (files['styles.css']) {
     const css = files['styles.css'];
     const hasLines = css.includes('notebook-paper') || css.includes('ruledLines') || css.includes('repeating-linear-gradient');
-    if (!hasLines) { console.error('  ✗ Missing ruled line styles'); ok = false; }
+    if (!hasLines) { console.error('  ✗ Missing ruled line styles (notebook-paper-css or custom)'); ok = false; }
     else console.log('  ✓ ruled line styles present');
     const hasA4 = css.includes('a4-w') || css.includes('793.7');
     const hasA5 = css.includes('a5-w') || css.includes('559.4');
@@ -175,7 +177,7 @@ async function build() {
   if (!ok) { console.error('  ✗ validation failed'); return false; }
 
   // Copy src/www → app/src/main/assets/www/
-  const srcFiles = ['index.html', 'styles.css', 'paper.js', 'app.js', 'css/lib/notebook-paper.min.css'];
+  const srcFiles = ['index.html', 'styles.css', 'paper.js', 'app.js'];
   for (const f of srcFiles) {
     const content = read(`${SRC}/${f}`);
     if (content) {
@@ -196,8 +198,80 @@ async function test() {
   return true;
 }
 
-/* ━━ run ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const commands = { validate, lint, format, build, test };
+/* NEW: Fetch latest notebook-paper-css from GitHub releases */
+async function fetchLib() {
+  console.log('━━ fetch-lib ━━');
+  
+  const libDir = `${SRC}/css/lib`;
+  const libPath = `${libDir}/notebook-paper.min.css`;
+  const url = 'https://github.com/kg24ghrt-ops/notebook-paper-css/releases/latest/download/notebook-paper.min.css';
+  
+  // Create directory if it doesn't exist
+  try {
+    fs.mkdirSync(libDir, { recursive: true });
+    console.log('  ✓ created lib directory');
+  } catch (e) {
+    if (e.code !== 'EEXIST') {
+      console.error(`  ✗ cannot create directory ${libDir}: ${e.message}`);
+      return false;
+    }
+  }
+  
+  // Download the file using Node.js https
+  console.log('  ↓ Downloading notebook-paper-css from GitHub releases...');
+  
+  return new Promise((resolve) => {
+    const file = fs.createWriteStream(libPath);
+    
+    https.get(url, (response) => {
+      if (response.statusCode !== 200) {
+        console.error(`  ✗ Failed to download: HTTP ${response.statusCode}`);
+        file.close();
+        fs.unlink(libPath, () => {}); // Clean up empty file
+        resolve(false);
+        return;
+      }
+      
+      let bytesWritten = 0;
+      response.pipe(file);
+      
+      file.on('finish', () => {
+        file.close();
+        const stats = fs.statSync(libPath);
+        console.log(`  ✓ Downloaded notebook-paper.min.css (${stats.size} bytes)`);
+        
+        // Extract version from file if possible
+        const content = fs.readFileSync(libPath, 'utf8');
+        const versionMatch = content.match(/v(\d+\.\d+\.\d+)/);
+        if (versionMatch) {
+          console.log(`  ℹ Version: ${versionMatch[1]}`);
+        }
+        
+        resolve(true);
+      });
+      
+      file.on('error', (err) => {
+        console.error(`  ✗ Download error: ${err.message}`);
+        file.close();
+        fs.unlink(libPath, () => {});
+        resolve(false);
+      });
+      
+      response.on('error', (err) => {
+        console.error(`  ✗ Request error: ${err.message}`);
+        file.close();
+        fs.unlink(libPath, () => {});
+        resolve(false);
+      });
+    }).on('error', (err) => {
+      console.error(`  ✗ Connection error: ${err.message}`);
+      resolve(false);
+    });
+  });
+}
+
+/* ━━━━ run ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const commands = { validate, lint, format, build, test, fetchLib };
 const fn = commands[cmd];
 if (!fn) {
   console.error(`Unknown command: ${cmd}. Available: ${Object.keys(commands).join(', ')}`);
