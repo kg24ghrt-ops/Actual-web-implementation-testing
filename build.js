@@ -175,7 +175,7 @@ async function build() {
   if (!ok) { console.error('  ✗ validation failed'); return false; }
 
   // Copy src/www → app/src/main/assets/www/
-  const srcFiles = ['index.html', 'styles.css', 'paper.js', 'app.js'];
+  const srcFiles = ['index.html', 'styles.css', 'paper.js', 'app.js', 'css/lib/notebook-paper.min.css'];
   for (const f of srcFiles) {
     const content = read(`${SRC}/${f}`);
     if (content) {

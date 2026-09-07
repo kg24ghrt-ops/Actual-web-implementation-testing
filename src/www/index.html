@@ -8,7 +8,7 @@
   <meta name="description" content="Photorealistic lined notebook paper with DIN 476 A4 dimensions. Pinch to zoom, drag to pan, type on lines." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>No Home Work - Photorealistic Notebook Paper</title>
+  <title>Notebook Paper</title>
   
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- Photorealistic Notebook Paper CSS Library -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notebook-paper-css@1.2.0/dist/notebook-paper.min.css" />
+  <!-- Photorealistic Notebook Paper CSS Library - BUNDLED LOCAL -->
+  <link rel="stylesheet" href="css/lib/notebook-paper.min.css" />
   
   <!-- Custom styles -->
   <link rel="stylesheet" href="styles.css" />
@@ -96,6 +96,11 @@
     #paperContainer {
       transform-origin: 0 0;
     }
+    
+    /* Paper content - clean, empty by default */
+    #paperContent {
+      pointer-events: none;
+    }
   </style>
   
   <!-- Preconnect to CDNs for faster loading -->
@@ -115,11 +120,10 @@
     <!-- Logo / App Name -->
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 flex items-center justify-center rounded bg-emerald-600 text-white font-bold text-lg">
-        NHW
+        N
       </div>
       <div class="hidden sm:block">
-        <h1 class="text-sm font-semibold text-zinc-200 tracking-tight">No Home Work</h1>
-        <p class="text-xs text-zinc-500 -mt-0.5">v2.1.0</p>
+        <h1 class="text-sm font-semibold text-zinc-200 tracking-tight">Notebook</h1>
       </div>
     </div>
 
@@ -128,20 +132,9 @@
       <label class="sr-only" for="formatSelect">Paper format</label>
       <select id="formatSelect"
         class="bg-zinc-800 text-zinc-200 text-xs font-semibold border border-zinc-600 rounded px-3 py-1.5 outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200 hover:bg-zinc-700">
-        <option value="A4" selected>A4 — 210 × 297 mm</option>
-        <option value="A5">A5 — 148 × 210 mm</option>
+        <option value="A4" selected>A4</option>
+        <option value="A5">A5</option>
       </select>
-    </div>
-
-    <!-- Theme Toggle -->
-    <div class="flex items-center gap-2 ml-4">
-      <button id="themeToggle"
-        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base font-bold active:bg-zinc-600 transition hover:bg-zinc-700"
-        title="Toggle theme (T)">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      </button>
     </div>
 
     <!-- Spacer -->
@@ -159,33 +152,11 @@
         title="Zoom in (+)">+</button>
     </div>
 
-    <!-- Fullscreen Toggle -->
-    <div class="flex items-center gap-1 ml-2">
-      <button id="fullscreenToggle"
-        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-base active:bg-zinc-600 transition hover:bg-zinc-700"
-        title="Toggle fullscreen (F)">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
-        </svg>
-      </button>
-    </div>
-
     <!-- Reset View -->
     <div class="flex items-center gap-1 ml-1">
       <button id="resetView"
         class="h-8 px-3 rounded bg-zinc-800 text-zinc-300 border border-zinc-600 text-xs font-semibold active:bg-zinc-600 transition hover:bg-zinc-700"
         title="Reset view (R)">Reset</button>
-    </div>
-
-    <!-- Info Button -->
-    <div class="flex items-center gap-1 ml-1">
-      <button id="infoToggle"
-        class="w-8 h-8 flex items-center justify-center rounded bg-zinc-800 text-zinc-300 border border-zinc-600 active:bg-zinc-600 transition hover:bg-zinc-700"
-        title="Toggle info">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </button>
     </div>
 
     <!-- Handwriting Toggle -->
@@ -195,26 +166,6 @@
         title="Toggle handwriting mode">Write</button>
     </div>
   </header>
-
-  <!-- Info Panel (Hidden by default) -->
-  <aside id="infoPanel" class="fixed bottom-4 right-4 z-40 bg-zinc-900 bg-opacity-90 backdrop-blur-md rounded-lg p-4 max-w-xs shadow-xl transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="flex justify-between items-start mb-2">
-      <h3 class="text-sm font-semibold text-zinc-200">About</h3>
-      <button id="infoClose" class="text-zinc-500 hover:text-zinc-300 transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <p class="text-xs text-zinc-400 leading-relaxed">
-      Photorealistic lined notebook paper using notebook-paper-css library.
-      <span class="block mt-1">Pinch to zoom, drag to pan. Double-tap to toggle zoom.</span>
-      <span class="block mt-1">Click on lines to type handwritten text.</span>
-    </p>
-    <div class="mt-3 pt-3 border-t border-zinc-700">
-      <p class="text-xs text-zinc-500">v2.1.0 - Using notebook-paper-css + Rough.js</p>
-    </div>
-  </aside>
 
   <!-- Viewport (pan / pinch area) -->
   <main id="viewport"
@@ -232,22 +183,10 @@
         <!-- Handwritten text canvas (positioned above paper) -->
         <canvas id="handwritingCanvas" class="absolute inset-0 pointer-events-auto z-[10]" style="touch-action: none;"></canvas>
 
-        <!-- Content sits ON TOP of paper, aligned to margins -->
+        <!-- Content area - EMPTY by default, no text -->
         <div id="paperContent"
           class="relative z-[5]"
           style="padding-top: 113.4px; padding-left: 94.5px; padding-right: 32px; padding-bottom: 48px;">
-          <header class="mb-10">
-            <h1 class="text-3xl font-bold text-zinc-900 tracking-tight leading-tight" style="font-family: Georgia, serif;">
-              No Home Work
-            </h1>
-            <p class="mt-1.5 text-[11px] font-semibold uppercase tracking-widest text-zinc-400" style="font-family: system-ui, sans-serif;">
-              Photorealistic notebook paper &mdash; <span id="formatLabel">A4</span> DIN 476
-            </p>
-          </header>
-          <section class="text-sm leading-relaxed text-zinc-700" style="font-family: Georgia, serif; max-width: 52ch; text-align: justify; hyphens: auto; -webkit-hyphens: auto;">
-            <p>This is a photorealistic lined notebook page rendered at true DIN 476 dimensions using the notebook-paper-css library. The paper texture is a scanned image of real notebook paper.</p>
-            <p class="mt-4">Click on any line to start typing handwritten text. Use the Write button or press W to toggle handwriting mode.</p>
-          </section>
         </div>
 
         <!-- Paper edge shadows (depth cues) -->
@@ -268,57 +207,20 @@
   <script src="app.js"></script>
   <script src="handwriting.js"></script>
   
-  <!-- Initialize theme toggle -->
+  <!-- Initialize -->
   <script>
     (function() {
       'use strict';
       
       // Theme toggle functionality
       const themeToggle = document.getElementById('themeToggle');
-      const fullscreenToggle = document.getElementById('fullscreenToggle');
-      const infoToggle = document.getElementById('infoToggle');
-      const infoPanel = document.getElementById('infoPanel');
-      const infoClose = document.getElementById('infoClose');
       const handwritingToggle = document.getElementById('handwritingToggle');
       
       if (themeToggle) {
         themeToggle.addEventListener('click', function() {
           if (window.NoHomeWorkApp && window.NoHomeWorkApp.theme) {
-            const newTheme = window.NoHomeWorkApp.theme.toggle();
-            showToast(`Theme: ${newTheme}`);
+            window.NoHomeWorkApp.theme.toggle();
           }
-        });
-      }
-      
-      if (fullscreenToggle) {
-        fullscreenToggle.addEventListener('click', function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(console.warn);
-          } else {
-            document.exitFullscreen();
-          }
-        });
-      }
-      
-      if (infoToggle && infoPanel) {
-        infoToggle.addEventListener('click', function() {
-          const isVisible = infoPanel.classList.contains('opacity-100');
-          if (isVisible) {
-            infoPanel.classList.remove('opacity-100');
-            infoPanel.classList.add('opacity-0');
-            infoPanel.classList.add('pointer-events-none');
-          } else {
-            infoPanel.classList.remove('opacity-0', 'pointer-events-none');
-            infoPanel.classList.add('opacity-100');
-          }
-        });
-      }
-      
-      if (infoClose && infoPanel) {
-        infoClose.addEventListener('click', function() {
-          infoPanel.classList.remove('opacity-100');
-          infoPanel.classList.add('opacity-0');
-          infoPanel.classList.add('pointer-events-none');
         });
       }
       
@@ -328,24 +230,6 @@
             window.Handwriting.toggle();
           }
         });
-      }
-      
-      function showToast(message, duration = 3000) {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        
-        const existing = container.querySelector('.toast');
-        if (existing) existing.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = 'toast bg-zinc-900 text-white px-4 py-2 rounded shadow-lg animate-fade-in pointer-events-auto';
-        toast.textContent = message;
-        container.appendChild(toast);
-        
-        setTimeout(() => {
-          toast.classList.add('animate-fade-out');
-          setTimeout(() => toast.remove(), 300);
-        }, duration);
       }
       
       // Hide loading indicator when Paper.js is ready
