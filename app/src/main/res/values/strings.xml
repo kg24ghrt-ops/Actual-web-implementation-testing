@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">no home work</string>
+    <string name="app_name">Notebook Paper</string>
+    <string name="app_description">Native notebook paper with DIN 476 A4 dimensions and realistic ruled lines</string>
 </resources>
