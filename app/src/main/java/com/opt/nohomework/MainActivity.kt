@@ -2,6 +2,7 @@ package com.opt.nohomework
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.opt.nohomework.paper.LinedPaperManager
@@ -11,6 +12,7 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
     
     private lateinit var paperManager: LinedPaperManager
+    private var statusLabelId: Int = -1
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             id = View.generateViewId()
             setPadding(0, 32, 0, 0)
         }
+        statusLabelId = statusLabel.id
         layout.addView(statusLabel)
         
         setContentView(layout)
@@ -140,7 +143,7 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun updateStatus(file: File) {
-        val statusLabel = findViewById<TextView>(View.generateViewId() - 1) ?: return
+        val statusLabel = findViewById<TextView>(statusLabelId) ?: return
         statusLabel.text = "Last generated: ${file.name}\nSize: ${file.length() / 1024}KB\nLocation: ${file.absolutePath}"
     }
     

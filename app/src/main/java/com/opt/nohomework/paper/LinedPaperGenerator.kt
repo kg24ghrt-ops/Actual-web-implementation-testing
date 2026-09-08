@@ -101,10 +101,10 @@ class LinedPaperGenerator {
         val topMarginPx = PaperDimensions.mmToPx(TOP_MARGIN_MM, dpi)
         val bottomMarginPx = PaperDimensions.mmToPx(15f, dpi) // Bottom margin
         
-        var y = topMarginPx
+        var y = topMarginPx.toFloat()
         while (y < size.height - bottomMarginPx) {
-            canvas.drawLine(0f, y, size.width, y, paint)
-            y += lineSpacingPx
+            canvas.drawLine(0f, y, size.width.toFloat(), y, paint)
+            y += lineSpacingPx.toFloat()
         }
     }
     
@@ -115,13 +115,13 @@ class LinedPaperGenerator {
             isAntiAlias = true
         }
         
-        val marginPx = PaperDimensions.mmToPx(MARGIN_MM, dpi)
-        canvas.drawLine(marginPx, 0f, marginPx, size.height, paint)
+        val marginPx = PaperDimensions.mmToPx(MARGIN_MM, dpi).toFloat()
+        canvas.drawLine(marginPx, 0f, marginPx, size.height.toFloat(), paint)
     }
     
     private fun drawHolePunches(canvas: Canvas, size: SizeF, dpi: Int) {
-        val holeRadiusPx = PaperDimensions.mmToPx(3f, dpi) // ~6mm diameter
-        val marginOffsetPx = PaperDimensions.mmToPx(8f, dpi) // Distance from edge
+        val holeRadiusPx = PaperDimensions.mmToPx(3f, dpi).toFloat() // ~6mm diameter
+        val marginOffsetPx = PaperDimensions.mmToPx(8f, dpi).toFloat() // Distance from edge
         
         val paint = Paint().apply {
             color = PaperColors.HOLE_PUNCH_GRAY
