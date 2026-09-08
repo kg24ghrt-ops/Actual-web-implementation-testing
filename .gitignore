@@ -1,3 +1,13 @@
 ```
-.doc_tool_storage/
+# Build artifacts
+build/
+# Dependencies
+.gradle/
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+# Editors
+.vscode/
+.idea/
 ```
