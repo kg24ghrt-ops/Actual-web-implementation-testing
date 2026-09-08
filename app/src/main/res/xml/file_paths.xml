@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Share generated lined papers -->
+    <files-path
+        name="lined_papers"
+        path="lined_papers/" />
+    
+    <!-- Cache for temporary exports -->
+    <cache-path
+        name="cache"
+        path="." />
+</paths>
