@@ -174,9 +174,9 @@ class LinedPaperGenerator {
             val bleedFactor = abs(sin(x * 0.01f) * cos(y * 0.01f)) * 10f
             
             paint.color = Color.rgb(
-                (245 + noiseValue + warmTint * 1.2f + bleedFactor).coerceIn(0, 255),
-                (243 + noiseValue + warmTint * 0.8f + bleedFactor * 0.8f).coerceIn(0, 255),
-                (240 + noiseValue + warmTint * 0.3f + bleedFactor * 0.5f).coerceIn(0, 255)
+                (245 + noiseValue + warmTint * 1.2f + bleedFactor).toInt().coerceIn(0, 255),
+                (243 + noiseValue + warmTint * 0.8f + bleedFactor * 0.8f).toInt().coerceIn(0, 255),
+                (240 + noiseValue + warmTint * 0.3f + bleedFactor * 0.5f).toInt().coerceIn(0, 255)
             )
             paint.strokeWidth = random.nextFloat() * 0.5f + 0.5f
             canvas.drawPoint(x.toFloat(), y.toFloat(), paint)
