@@ -24,4 +24,36 @@
         android:scrollbars="vertical"
         android:overScrollMode="always" />
 
+    <!-- Bottom Sheet Controls -->
+    <include
+        android:id="@+id/bottomSheet"
+        layout="@layout/bottom_sheet_controls"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+
+    <!-- Export FAB -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabExport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="80dp"
+        android:text="Export"
+        app:icon="@android:drawable/ic_menu_save"
+        app:backgroundTint="@color/md_theme_primary"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+    <!-- Share FAB -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="140dp"
+        android:text="Share"
+        app:icon="@android:drawable/ic_menu_share"
+        app:backgroundTint="@color/md_theme_secondary"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
