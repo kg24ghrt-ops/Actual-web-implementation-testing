@@ -1,14 +1,40 @@
-```
-# Gradle
-.gradle/
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
+*.out
 build/
+target/
 
-# Local properties
-local.properties
+# Dependencies
+.gradle/
+node_modules/
+venv/
+.venv/
+__pycache__/
 
-# Doc tool storage
-.doc_tool_storage/
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Logs
+# System files
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.env.*
+
+# Logs and temp files
 *.log
-```
+*.tmp
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# MyPy cache
+.mypy_cache/
+.pytest_cache/
