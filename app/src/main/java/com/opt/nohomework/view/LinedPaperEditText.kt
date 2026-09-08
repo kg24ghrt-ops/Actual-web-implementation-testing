@@ -1,11 +1,12 @@
 package com.opt.nohomework.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
+import com.opt.nohomework.R
 import com.opt.nohomework.paper.PaperSpecs
 import com.opt.nohomework.paper.PaperSize
 import com.opt.nohomework.paper.LineStyle
@@ -16,11 +17,12 @@ import kotlin.math.max
  * with text input aligned to lines. Supports any language, multiline input,
  * and optional margin restrictions.
  * 
- * Performance optimizations:
- * - Reused Paint objects (zero allocations in onDraw)
- * - Hardware acceleration enabled
- * - Pre-calculated line positions
- * - Direct Canvas drawing (no bitmaps)
+ * Enhanced features for official app polish:
+ * - Realistic paper texture overlay
+ * - Subtle paper grain effect
+ * - Professional line rendering with anti-aliasing
+ * - Smooth scrolling performance
+ * - High-quality export mode
  */
 class LinedPaperEditText @JvmOverloads constructor(
     context: Context,
@@ -56,12 +58,24 @@ class LinedPaperEditText @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    private val texturePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        alpha = 15 // Very subtle texture overlay
+        isFilterBitmap = true
+    }
+
+    private val paperBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#FEFEFE") // Slightly off-white for realism
+        style = Paint.Style.FILL
+    }
+
     // Configuration
     var paperSize: PaperSize = PaperSize.A4
     var lineStyle: LineStyle = LineStyle.COLLEGE
     var showMargin: Boolean = true
     var showHolePunches: Boolean = false
     var restrictTextToMargin: Boolean = false
+    var texturedPaper: Boolean = true
+    var highQuality: Boolean = false
 
     // Pre-calculated metrics
     private var lineHeightPx: Float = 0f
@@ -73,6 +87,9 @@ class LinedPaperEditText @JvmOverloads constructor(
     // Hole punch positions (pre-calculated)
     private val holePunchPositions = mutableListOf<Float>()
 
+    // Texture bitmap cache
+    private var textureBitmap: Bitmap? = null
+
     init {
         // Enable hardware acceleration for better performance
         setLayerType(LAYER_TYPE_HARDWARE, null)
@@ -82,12 +99,14 @@ class LinedPaperEditText @JvmOverloads constructor(
         
         // Load initial metrics
         updateMetrics()
+        
+        // Generate paper texture
+        generatePaperTexture()
     }
 
     private fun setupTextProperties() {
-        // Use a handwriting-style font if available, otherwise default
-        // Supports any language - Unicode ready
-        typeface = android.graphics.Typeface.DEFAULT
+        // Use a clean, readable font
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
         
         // Line height will match paper line spacing
         setLineSpacing(0f, 1f)
@@ -97,6 +116,43 @@ class LinedPaperEditText @JvmOverloads constructor(
         
         // Padding to accommodate margin and top spacing
         updatePadding()
+    }
+
+    private fun generatePaperTexture() {
+        if (!texturedPaper) return
+        
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        
+        if (width <= 0 || height <= 0) return
+        
+        textureBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).apply {
+            val canvas = Canvas(this)
+            
+            // Fill with base paper color
+            canvas.drawColor(Color.parseColor("#FEFEFE"))
+            
+            // Add subtle paper grain using noise
+            val random = java.util.Random(42) // Fixed seed for consistency
+            val paint = Paint()
+            
+            for (i in 0 until 5000) {
+                val x = random.nextInt(width)
+                val y = random.nextInt(height)
+                val alpha = random.nextInt(8) // Very subtle
+                paint.color = Color.argb(alpha, 150, 140, 130)
+                canvas.drawPoint(x.toFloat(), y.toFloat(), paint)
+            }
+            
+            // Add very subtle horizontal fiber lines
+            for (i in 0 until 100) {
+                val y = random.nextInt(height)
+                val alpha = random.nextInt(5)
+                paint.color = Color.argb(alpha, 100, 90, 80)
+                paint.strokeWidth = 0.5f
+                canvas.drawLine(0f, y.toFloat(), width.toFloat(), y.toFloat(), paint)
+            }
+        }
     }
 
     private fun updateMetrics() {
@@ -157,11 +213,19 @@ class LinedPaperEditText @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         updateMetrics()
+        if (texturedPaper) {
+            generatePaperTexture()
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         // Draw paper background first
         drawPaperBackground(canvas)
+        
+        // Draw paper texture overlay
+        if (texturedPaper && textureBitmap != null) {
+            drawPaperTexture(canvas)
+        }
         
         // Draw lines behind text
         drawLines(canvas)
@@ -181,8 +245,14 @@ class LinedPaperEditText @JvmOverloads constructor(
     }
 
     private fun drawPaperBackground(canvas: Canvas) {
-        // White background for paper
-        canvas.drawColor(Color.WHITE)
+        // Off-white background for realistic paper feel
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paperBackgroundPaint)
+    }
+
+    private fun drawPaperTexture(canvas: Canvas) {
+        textureBitmap?.let { bitmap ->
+            canvas.drawBitmap(bitmap, 0f, 0f, texturePaint)
+        }
     }
 
     private fun drawLines(canvas: Canvas) {
@@ -218,13 +288,21 @@ class LinedPaperEditText @JvmOverloads constructor(
         style: LineStyle = lineStyle,
         margin: Boolean = showMargin,
         holePunches: Boolean = showHolePunches,
-        restrictToMargin: Boolean = restrictTextToMargin
+        restrictToMargin: Boolean = restrictTextToMargin,
+        texturedPaper: Boolean = this.texturedPaper,
+        highQuality: Boolean = this.highQuality
     ) {
         paperSize = size
         lineStyle = style
         showMargin = margin
         showHolePunches = holePunches
         restrictTextToMargin = restrictToMargin
+        this.texturedPaper = texturedPaper
+        this.highQuality = highQuality
+        
+        if (texturedPaper && textureBitmap == null) {
+            generatePaperTexture()
+        }
         
         updateMetrics()
         invalidate()
@@ -245,12 +323,56 @@ class LinedPaperEditText @JvmOverloads constructor(
     }
 
     /**
-     * Export current content as image
+     * Export current content as high-quality image
      */
     fun exportAsImage(): android.graphics.Bitmap {
-        val bitmap = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
+        // Create high-resolution bitmap for export
+        val density = context.resources.displayMetrics.density
+        val exportWidth = (width * 2).coerceAtLeast(1654) // A4 at 200 DPI
+        val exportHeight = (height * 2).coerceAtLeast(2339)
+        
+        val bitmap = android.graphics.Bitmap.createBitmap(exportWidth, exportHeight, android.graphics.Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
+        
+        // Scale up for high quality
+        val scale = exportWidth.toFloat() / width.toFloat()
+        canvas.scale(scale, scale)
+        
+        // Draw everything at high resolution
+        drawPaperBackground(canvas)
+        
+        if (texturedPaper) {
+            // Regenerate texture at higher resolution for export
+            val exportTexture = Bitmap.createBitmap(exportWidth, exportHeight, Bitmap.Config.ARGB_8888)
+            val textureCanvas = Canvas(exportTexture)
+            textureCanvas.drawColor(Color.parseColor("#FEFEFE"))
+            
+            val random = java.util.Random(42)
+            val paint = Paint()
+            for (i in 0 until 20000) {
+                val x = random.nextInt(exportWidth)
+                val y = random.nextInt(exportHeight)
+                val alpha = random.nextInt(8)
+                paint.color = Color.argb(alpha, 150, 140, 130)
+                textureCanvas.drawPoint(x.toFloat(), y.toFloat(), paint)
+            }
+            
+            canvas.drawBitmap(exportTexture, 0f, 0f, texturePaint)
+        }
+        
+        drawLines(canvas)
+        
+        if (showMargin) {
+            drawMarginLine(canvas)
+        }
+        
+        if (showHolePunches) {
+            drawHolePunches(canvas)
+        }
+        
+        // Draw text
         draw(canvas)
+        
         return bitmap
     }
 

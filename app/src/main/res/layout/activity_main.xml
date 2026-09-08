@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Native Notebook Paper Layout
-    
-    Features:
-    - Full-screen custom Canvas view for paper rendering
-    - Material 3 theming
-    - Edge-to-edge display
-    - No WebView - pure native Android
+    Modern Full-Screen Notebook Paper Layout
+    Material Design 3 with edge-to-edge display
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_theme_surface"
-    android:fitsSystemWindows="false"
-    
-    tools:context=".MainActivity">
-    
-    <!-- Custom Canvas-based Notebook Paper View -->
-    <com.opt.nohomework.NotebookPaperView
-        android:id="@+id/paperView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    android:fitsSystemWindows="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Full-screen Lined Paper Editor -->
+    <com.opt.nohomework.view.LinedPaperEditText
+        android:id="@+id/linedPaperEditor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:imeOptions="flagNoExtractUi"
+        android:scrollbars="vertical"
+        android:overScrollMode="always" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
