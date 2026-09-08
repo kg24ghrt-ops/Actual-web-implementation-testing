@@ -15,7 +15,7 @@
     
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_ref_pal_surface"
+    android:background="@color/md_theme_surface"
     android:fitsSystemWindows="false"
     
     tools:context=".MainActivity">
