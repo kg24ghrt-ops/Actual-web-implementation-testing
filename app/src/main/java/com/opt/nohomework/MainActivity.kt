@@ -10,6 +10,7 @@ import android.os.Environment
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomSheet: View
     private lateinit var fabExport: ExtendedFloatingActionButton
     private lateinit var fabShare: ExtendedFloatingActionButton
+    private lateinit var mainLayout: CoordinatorLayout
     private val PERMISSION_REQUEST_CODE = 100
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +42,9 @@ class MainActivity : AppCompatActivity() {
         paperManager = LinedPaperManager(this)
         
         // Get views from XML
+        mainLayout = findViewById(R.id.mainLayout)
         linedPaperEditor = findViewById(R.id.linedPaperEditor)
+        bottomSheet = findViewById(R.id.bottomSheet)
         
         // Configure the editor with enhanced realism
         linedPaperEditor.apply {
@@ -58,10 +62,12 @@ class MainActivity : AppCompatActivity() {
             setLineSpacing(1.2f, 1.0f)
         }
         
-        // Setup bottom sheet
+        // Setup bottom sheet behavior
         setupBottomSheet()
         
         // Setup Floating Action Buttons
+        fabExport = findViewById(R.id.fabExport)
+        fabShare = findViewById(R.id.fabShare)
         setupFABs()
         
         // Request storage permission
@@ -69,13 +75,8 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupBottomSheet() {
-        bottomSheet = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_controls, findViewById(R.id.linedPaperEditor), false)
-        val mainLayout = findViewById<View>(R.id.mainLayout)
-        mainLayout.addView(bottomSheet)
-        
-        val bottomSheetParams = bottomSheet.layoutParams as CoordinatorLayout.LayoutParams
-        bottomSheetParams.behavior = BottomSheetBehavior<View>()
-        
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+        behavior.state = BottomSheetBehavior.STATE_HIDDEN
         setupBottomSheetControls()
     }
     
@@ -152,39 +153,8 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupFABs() {
-        val mainLayout = findViewById<View>(R.id.mainLayout)
-        
-        fabExport = ExtendedFloatingActionButton(this).apply {
-            text = "Export"
-            icon = ContextCompat.getDrawable(this@MainActivity, android.R.drawable.ic_menu_save)
-            layoutParams = CoordinatorLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = android.view.Gravity.BOTTOM or android.view.Gravity.END
-                marginEnd = 16.dpToPx()
-                bottomMargin = 80.dpToPx()
-            }
-            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.md_theme_primary))
-            setOnClickListener { exportAsImage() }
-            mainLayout.addView(this)
-        }
-        
-        fabShare = ExtendedFloatingActionButton(this).apply {
-            text = "Share"
-            icon = ContextCompat.getDrawable(this@MainActivity, android.R.drawable.ic_menu_share)
-            layoutParams = CoordinatorLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = android.view.Gravity.BOTTOM or android.view.Gravity.END
-                marginEnd = 16.dpToPx()
-                bottomMargin = 140.dpToPx()
-            }
-            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.md_theme_secondary))
-            setOnClickListener { shareAsImage() }
-            mainLayout.addView(this)
-        }
+        fabExport.setOnClickListener { exportAsImage() }
+        fabShare.setOnClickListener { shareAsImage() }
     }
     
     private fun exportAsImage() {

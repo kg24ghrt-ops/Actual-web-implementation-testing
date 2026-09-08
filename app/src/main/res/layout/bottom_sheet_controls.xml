@@ -3,17 +3,16 @@
     Modern Bottom Sheet Controls for Notebook Paper App
     Material Design 3 styled control panel
 -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     
+    android:id="@+id/bottomSheetContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@drawable/bottom_sheet_background"
-    android:elevation="16dp"
-    app:behavior_peekHeight="200dp"
-    app:behavior_hideable="false"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    android:elevation="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -189,4 +188,4 @@
 
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
