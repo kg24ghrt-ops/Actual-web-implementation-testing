@@ -82,4 +82,33 @@ object PaperColors {
     val MARGIN_RED = Color.parseColor("#E74C3C")     // Red margin line
     val PAPER_WHITE = Color.parseColor("#FEFEFE")    // Slightly off-white
     val HOLE_PUNCH_GRAY = Color.parseColor("#D0D0D0") // Hole punch shadow
+    val PAPER_TEXTURE_COLOR = Color.parseColor("#F5F3F0") // Warm off-white for texture
+}
+
+/**
+ * Configuration constants for paper texture and lighting effects.
+ * All values are calibrated for realistic photo-like appearance.
+ * 
+ * Architecture Decision: These constants are centralized here to:
+ * - Maintain consistency across all paper generation
+ * - Make tuning easier (change in one place)
+ * - Document the reasoning behind each value
+ * - Ensure all agents understand the calibration choices
+ */
+object PaperTextureConfig {
+    // Texture intensity controls
+    const val DEFAULT_TEXTURE_INTENSITY = 0.08f    // Base texture strength (8% of full range)
+    const val DEFAULT_LIGHTING_VARIATION = 0.05f   // Natural lighting variation (5%)
+    
+    // Multi-scale noise parameters
+    const val FIBER_NOISE_SCALE = 0.05f            // Scale for large fiber patterns
+    const val TEXTURE_NOISE_POINTS = 10000        // Noise points for standard DPI
+    const val HIGH_QUALITY_TEXTURE_POINTS = 40000 // Noise points for high DPI (>200)
+    
+    // Color tinting for realism
+    const val WARM_TINT_INTENSITY = 0.3f           // Warm brown tint factor (30%)
+    
+    // Lighting parameters
+    const val VIGNETTE_STRENGTH = 1.2f             // Vignette darkness multiplier
+    val DEFAULT_LIGHT_DIRECTION = Pair(-0.3f, -0.4f) // Light comes from top-left
 }
