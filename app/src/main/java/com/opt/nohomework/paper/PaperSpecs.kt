@@ -17,6 +17,10 @@ object PaperDimensions {
         return (mm * dpi / 25.4f).toInt()
     }
     
+    fun mmToPxFloat(mm: Float, dpi: Int): Float {
+        return mm * dpi / 25.4f
+    }
+    
     fun getA4Size(dpi: Int): SizeF {
         return SizeF(mmToPx(A4.first, dpi).toFloat(), mmToPx(A4.second, dpi).toFloat())
     }
@@ -34,6 +38,40 @@ enum class LineStyle(val spacingMm: Float, val lineStyleName: String) {
     NARROW(6.35f, "Narrow Ruled"),    // ~1/4 inch
     COLLEGE(7.1f, "College Ruled"),   // ~9/32 inch (most common)
     WIDE(8.7f, "Wide Ruled")          // ~11/32 inch (elementary)
+}
+
+/**
+ * Paper size enum for easy selection.
+ */
+enum class PaperSize(val widthMm: Float, val heightMm: Float) {
+    A4(210f, 297f),
+    A5(148f, 210f)
+}
+
+/**
+ * Complete paper specifications including margins and line spacing.
+ */
+data class PaperSpecs(
+    val widthMm: Float,
+    val heightMm: Float,
+    val lineSpacingMm: Float,
+    val marginLeftMm: Float = 25f,
+    val marginTopMm: Float = 15f,
+    val marginBottomMm: Float = 15f
+) {
+    companion object {
+        fun getPaperSpecs(
+            size: PaperSize,
+            lineStyle: LineStyle,
+            dpi: Int = 150
+        ): PaperSpecs {
+            return PaperSpecs(
+                widthMm = size.widthMm,
+                heightMm = size.heightMm,
+                lineSpacingMm = lineStyle.spacingMm
+            )
+        }
+    }
 }
 
 /**

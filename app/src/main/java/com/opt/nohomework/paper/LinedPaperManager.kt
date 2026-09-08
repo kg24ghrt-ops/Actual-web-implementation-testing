@@ -125,6 +125,16 @@ class LinedPaperManager(private val context: Context) {
         return generator.generate(sizeF, style, dpi, withMargin, withHolePunches)
     }
     
+    /**
+     * Save bitmap as PNG file.
+     */
+    fun saveBitmapAsPng(bitmap: Bitmap, filename: String): File {
+        val outputDir = getOutputDir()
+        val outputFile = File(outputDir, "$filename.png")
+        pdfExporter.exportToPng(bitmap, outputFile)
+        return outputFile
+    }
+    
     private fun getOutputDir(): File {
         val dir = File(context.filesDir, PAPERS_DIR)
         if (!dir.exists()) {
