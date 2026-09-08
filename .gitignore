@@ -1,3 +1,14 @@
 ```
+# Gradle
+.gradle/
+build/
+
+# Local properties
+local.properties
+
+# Doc tool storage
 .doc_tool_storage/
+
+# Logs
+*.log
 ```

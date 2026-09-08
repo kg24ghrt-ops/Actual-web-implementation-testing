@@ -1,0 +1,82 @@
+{
+  "https://httpbin.org/html": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122158_28f3848e8ba876014ed3e2a90e5a0432.txt",
+    "type": "text",
+    "added": "2026-09-08T12:21:58.070694"
+  },
+  "https://docs.python.org/3.12/contents.html": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122203_ac650c14811f311a106f47b8baf01a19.txt",
+    "type": "text",
+    "added": "2026-09-08T12:22:03.443009"
+  },
+  "https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122447_59b5c5ce7ad077d7e35bb43521070b05.txt",
+    "type": "text",
+    "added": "2026-09-08T12:24:47.260430"
+  },
+  "https://threejs.org/examples/#webgl_materials_texture_filters": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122453_8e5e12e116cb7080cd454c422011679f.txt",
+    "type": "text",
+    "added": "2026-09-08T12:24:53.530033"
+  },
+  "https://threejs.org/examples/#webgl_materials_texture_partialupdate": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122456_ed0cbaacd418e1acc91cb85dcf654db2.txt",
+    "type": "text",
+    "added": "2026-09-08T12:24:56.071288"
+  },
+  "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/webgl_materials_texture_filters.html": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122459_41fb193aecc0c5279ad51d582e8bc890.txt",
+    "type": "text",
+    "added": "2026-09-08T12:24:59.512072"
+  },
+  "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/webgl_materials_texture_partialupdate.html": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122502_162ef5e21a935177917c4c3ee2281494.txt",
+    "type": "text",
+    "added": "2026-09-08T12:25:02.912812"
+  },
+  "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Using_textures_in_WebGL": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122506_d529cb0beff0c42228e1fec28fcd0ef2.txt",
+    "type": "text",
+    "added": "2026-09-08T12:25:06.863895"
+  },
+  "https://threejs.org/docs/#api/en/materials/MeshStandardMaterial": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_122512_44465fc704fa73b341966bffae7345bf.txt",
+    "type": "text",
+    "added": "2026-09-08T12:25:12.919893"
+  },
+  "https://developer.android.com/guide/topics/graphics/hardware-accel": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123240_65dac280127034a0b456f2e665436321.txt",
+    "type": "text",
+    "added": "2026-09-08T12:32:40.550681"
+  },
+  "https://developer.android.com/reference/android/graphics/Canvas": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123245_0a3c899171c0c27f07f458b7ecfb5237.txt",
+    "type": "text",
+    "added": "2026-09-08T12:32:45.480399"
+  },
+  "https://developer.android.com/reference/android/graphics/Bitmap": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123250_954cf80f522abbc8c83f6d7a5d4ed2f3.txt",
+    "type": "text",
+    "added": "2026-09-08T12:32:50.945441"
+  },
+  "https://developer.android.com/topic/performance/graphics": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123255_3d3ee6a8906c3e785f9adf50cb84eaaf.txt",
+    "type": "text",
+    "added": "2026-09-08T12:32:55.672455"
+  },
+  "https://developer.android.com/develop/ui/views/layout/declaring-layout": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123303_e0093ed49e4e70fa3ac5dcbfb9283e9b.txt",
+    "type": "text",
+    "added": "2026-09-08T12:33:03.180298"
+  },
+  "https://developer.android.com/develop/ui/views/graphics": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123313_2a19b191db06b37e9e5704316cfa1485.txt",
+    "type": "text",
+    "added": "2026-09-08T12:33:13.506969"
+  },
+  "https://developer.android.com/reference/android/graphics/PorterDuffXfermode": {
+    "filepath": "/workspace/.doc_tool_storage/docs/20260908_123318_a864cf2331beff520ec424a8a87eb934.txt",
+    "type": "text",
+    "added": "2026-09-08T12:33:18.536088"
+  }
+}
