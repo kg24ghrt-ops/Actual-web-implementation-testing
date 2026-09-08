@@ -3,6 +3,7 @@ package com.opt.nohomework.paper
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import androidx.core.content.FileProvider
 import java.io.File
 import java.text.SimpleDateFormat
@@ -118,10 +119,20 @@ class LinedPaperManager(private val context: Context) {
         withHolePunches: Boolean = false
     ): Bitmap {
         val sizeF = android.util.SizeF(
-            PaperDimensions.mmToPx(size.first, dpi),
-            PaperDimensions.mmToPx(size.second, dpi)
+            PaperDimensions.mmToPx(size.first, dpi).toFloat(),
+            PaperDimensions.mmToPx(size.second, dpi).toFloat()
         )
         return generator.generate(sizeF, style, dpi, withMargin, withHolePunches)
+    }
+    
+    /**
+     * Save bitmap as PNG file.
+     */
+    fun saveBitmapAsPng(bitmap: Bitmap, filename: String): File {
+        val outputDir = getOutputDir()
+        val outputFile = File(outputDir, "$filename.png")
+        pdfExporter.exportToPng(bitmap, outputFile)
+        return outputFile
     }
     
     private fun getOutputDir(): File {
@@ -134,6 +145,6 @@ class LinedPaperManager(private val context: Context) {
     
     private fun generateFilename(size: String, style: LineStyle, extension: String): String {
         val timestamp = TIMESTAMP_FORMATTER.format(Date())
-        return "lined_paper_${size}_${style.name.lowercase()}_$timestamp.$extension"
+        return "lined_paper_${size}_${style.lineStyleName.lowercase().replace(" ", "_")}_$timestamp.$extension"
     }
 }

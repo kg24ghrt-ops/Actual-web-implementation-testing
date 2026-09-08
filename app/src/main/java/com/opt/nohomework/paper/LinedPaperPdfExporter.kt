@@ -35,7 +35,7 @@ class LinedPaperPdfExporter {
         withMargin: Boolean = true,
         withHolePunches: Boolean = false
     ) {
-        val fd = ParcelFileDescriptor.open(outputFile, ParcelFileDescriptor.MODE_CREATE or ParcelFileDescriptor.MODE_WRITE)
+        val fd = ParcelFileDescriptor.open(outputFile, ParcelFileDescriptor.MODE_CREATE or 0x6000000)
         
         try {
             val pdfDocument = PdfDocument()
@@ -54,7 +54,7 @@ class LinedPaperPdfExporter {
                 // Draw background
                 val bgPaint = android.graphics.Paint().apply {
                     color = PaperColors.PAPER_WHITE
-                    style = android.graphics.Paint.Style.FILL
+                    this.style = android.graphics.Paint.Style.FILL
                 }
                 canvas.drawRect(0f, 0f, widthPt, heightPt, bgPaint)
                 
