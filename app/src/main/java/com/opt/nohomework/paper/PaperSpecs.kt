@@ -18,11 +18,11 @@ object PaperDimensions {
     }
     
     fun getA4Size(dpi: Int): SizeF {
-        return SizeF(mmToPx(A4.first, dpi), mmToPx(A4.second, dpi))
+        return SizeF(mmToPx(A4.first, dpi).toFloat(), mmToPx(A4.second, dpi).toFloat())
     }
     
     fun getA5Size(dpi: Int): SizeF {
-        return SizeF(mmToPx(A5.first, dpi), mmToPx(A5.second, dpi))
+        return SizeF(mmToPx(A5.first, dpi).toFloat(), mmToPx(A5.second, dpi).toFloat())
     }
 }
 
@@ -30,7 +30,7 @@ object PaperDimensions {
  * Line spacing styles for notebook paper.
  * Standard school ruling specifications.
  */
-enum class LineStyle(val spacingMm: Float, val name: String) {
+enum class LineStyle(val spacingMm: Float, val lineStyleName: String) {
     NARROW(6.35f, "Narrow Ruled"),    // ~1/4 inch
     COLLEGE(7.1f, "College Ruled"),   // ~9/32 inch (most common)
     WIDE(8.7f, "Wide Ruled")          // ~11/32 inch (elementary)
