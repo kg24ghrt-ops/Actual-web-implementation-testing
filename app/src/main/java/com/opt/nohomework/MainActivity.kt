@@ -8,7 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
@@ -16,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
 import com.opt.nohomework.paper.LinedPaperManager
 import com.opt.nohomework.paper.LineStyle
@@ -29,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var paperManager: LinedPaperManager
     private lateinit var linedPaperEditor: LinedPaperEditText
     private lateinit var bottomSheet: View
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var fabExport: ExtendedFloatingActionButton
     private lateinit var fabShare: ExtendedFloatingActionButton
     private lateinit var mainLayout: CoordinatorLayout
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             setLineSpacing(1.2f, 1.0f)
         }
         
-        // Setup bottom sheet behavior
+        // Setup bottom sheet behavior - MUST be called after setContentView
         setupBottomSheet()
         
         // Setup Floating Action Buttons
@@ -75,79 +80,88 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun setupBottomSheet() {
-        val behavior = BottomSheetBehavior.from(bottomSheet)
-        behavior.state = BottomSheetBehavior.STATE_HIDDEN
-        setupBottomSheetControls()
+        // Get the BottomSheetBehavior from the view
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        
+        // Setup toggle listeners
+        setupToggleListeners()
     }
     
-    private fun setupBottomSheetControls() {
-        // Paper Size Selector
-        val sizeSpinner = bottomSheet.findViewById<Spinner>(R.id.sizeSpinner)
-        sizeSpinner?.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            arrayOf("A4 (Standard)", "A5 (Compact)")
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-        sizeSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val newSize = if (position == 0) PaperSize.A4 else PaperSize.A5
-                linedPaperEditor.configurePaper(size = newSize)
-                showSnackbar("Switched to ${if (position == 0) "A4" else "A5"} paper")
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        
-        // Line Style Selector
-        val styleSpinner = bottomSheet.findViewById<Spinner>(R.id.styleSpinner)
-        styleSpinner?.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            arrayOf("Narrow (6.35mm)", "College (7.1mm)", "Wide (8.7mm)")
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-        styleSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val newStyle = when (position) {
-                    0 -> LineStyle.NARROW
-                    1 -> LineStyle.COLLEGE
-                    else -> LineStyle.WIDE
-                }
-                linedPaperEditor.configurePaper(style = newStyle)
-                showSnackbar("Line style updated")
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        
-        // Clear Button
-        bottomSheet.findViewById<Button>(R.id.btnClear)?.setOnClickListener {
-            linedPaperEditor.clearPaper()
-            showSnackbar("Paper cleared")
-        }
-        
-        // Toggle Margin
-        bottomSheet.findViewById<Switch>(R.id.switchMargin)?.apply {
+    private fun setupToggleListeners() {
+        // Margin Toggle
+        findViewById<MaterialSwitch>(R.id.switchMargin)?.apply {
             isChecked = linedPaperEditor.showMargin
             setOnCheckedChangeListener { _, isChecked ->
                 linedPaperEditor.configurePaper(margin = isChecked)
+                showSnackbar("Margin ${if (isChecked) "enabled" else "disabled"}")
             }
         }
         
-        // Toggle Hole Punches
-        bottomSheet.findViewById<Switch>(R.id.switchHolePunches)?.apply {
+        // Hole Punches Toggle
+        findViewById<MaterialSwitch>(R.id.switchHolePunches)?.apply {
             isChecked = linedPaperEditor.showHolePunches
             setOnCheckedChangeListener { _, isChecked ->
                 linedPaperEditor.configurePaper(holePunches = isChecked)
+                showSnackbar("Hole punches ${if (isChecked) "enabled" else "disabled"}")
             }
         }
         
-        // Toggle Texture
-        bottomSheet.findViewById<Switch>(R.id.switchTexture)?.apply {
+        // Paper Texture Toggle
+        findViewById<MaterialSwitch>(R.id.switchTexture)?.apply {
             isChecked = linedPaperEditor.texturedPaper
             setOnCheckedChangeListener { _, isChecked ->
                 linedPaperEditor.configurePaper(texturedPaper = isChecked)
+                showSnackbar("Paper texture ${if (isChecked) "enabled" else "disabled"}")
+            }
+        }
+        
+        // Clear Button
+        findViewById<Button>(R.id.btnClear)?.setOnClickListener {
+            linedPaperEditor.clearPaper()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            showSnackbar("Paper cleared")
+        }
+        
+        // Paper Size Spinner
+        findViewById<Spinner>(R.id.sizeSpinner)?.apply {
+            adapter = ArrayAdapter(
+                this@MainActivity,
+                android.R.layout.simple_spinner_item,
+                arrayOf("A4 (Standard)", "A5 (Compact)")
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    val newSize = if (position == 0) PaperSize.A4 else PaperSize.A5
+                    linedPaperEditor.configurePaper(size = newSize)
+                    showSnackbar("Switched to ${if (position == 0) "A4" else "A5"} paper")
+                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+        }
+        
+        // Line Style Spinner
+        findViewById<Spinner>(R.id.styleSpinner)?.apply {
+            adapter = ArrayAdapter(
+                this@MainActivity,
+                android.R.layout.simple_spinner_item,
+                arrayOf("Narrow (6.35mm)", "College (7.1mm)", "Wide (8.7mm)")
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    val newStyle = when (position) {
+                        0 -> LineStyle.NARROW
+                        1 -> LineStyle.COLLEGE
+                        else -> LineStyle.WIDE
+                    }
+                    linedPaperEditor.configurePaper(style = newStyle)
+                    showSnackbar("Line style updated")
+                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
         }
     }

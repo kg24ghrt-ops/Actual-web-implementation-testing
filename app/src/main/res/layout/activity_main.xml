@@ -2,10 +2,15 @@
 <!--
     Modern Full-Screen Notebook Paper Layout
     Material Design 3 with edge-to-edge display
+    
+    Based on official Material Design 3 guidelines:
+    - https://m3.material.io/components/sheets-bottom
+    - https://developer.android.com/reference/com/google/android/material/bottomsheet/BottomSheetBehavior
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
@@ -22,13 +27,217 @@
         android:inputType="textMultiLine|textNoSuggestions"
         android:imeOptions="flagNoExtractUi"
         android:scrollbars="vertical"
-        android:overScrollMode="always" />
+        android:overScrollMode="always"
+        android:contentDescription="Notebook paper editor with realistic texture" />
 
-    <!-- Bottom Sheet Controls -->
-    <include
+    <!-- Bottom Sheet Controls - Direct child with proper behavior -->
+    <LinearLayout
         android:id="@+id/bottomSheet"
-        layout="@layout/bottom_sheet_controls"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bottom_sheet_background"
+        android:elevation="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="false"
+        app:behavior_draggable="true"
+        tools:ignore="UnusedAttribute">
+
+        <!-- Drag Handle -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/drag_handle"
+            android:contentDescription="Drag handle for bottom sheet" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Paper Settings"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_onSurface"
+            android:letterSpacing="0.02"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Paper Size Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Paper Size"
+                android:textSize="16sp"
+                android:textColor="@color/md_theme_onSurfaceVariant"
+                android:fontFamily="sans-serif-medium" />
+
+            <Spinner
+                android:id="@+id/sizeSpinner"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/spinner_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
+        <!-- Line Style Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Line Spacing"
+                android:textSize="16sp"
+                android:textColor="@color/md_theme_onSurfaceVariant"
+                android:fontFamily="sans-serif-medium" />
+
+            <Spinner
+                android:id="@+id/styleSpinner"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/spinner_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_theme_outlineVariant"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Toggle Options -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp">
+
+            <!-- Margin Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Show Margin Line"
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:fontFamily="sans-serif" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- Hole Punches Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hole Punches"
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:fontFamily="sans-serif" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchHolePunches"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <!-- Paper Texture Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Paper Texture"
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:fontFamily="sans-serif" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchTexture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Clear Button -->
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="Clear All Text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            style="@style/Widget.Material3.Button.TonalButton"
+            app:backgroundTint="@color/md_theme_errorContainer"
+            android:textColor="@color/md_theme_onErrorContainer" />
+
+    </LinearLayout>
 
     <!-- Export FAB -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -39,9 +248,12 @@
         android:layout_margin="16dp"
         android:layout_marginBottom="80dp"
         android:text="Export"
+        android:textAllCaps="false"
         app:icon="@android:drawable/ic_menu_save"
+        app:iconGravity="textStart"
         app:backgroundTint="@color/md_theme_primary"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:tint="@color/md_theme_onPrimary"
+        style="@style/Widget.Material3.FloatingActionButton.Primary" />
 
     <!-- Share FAB -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -52,8 +264,11 @@
         android:layout_margin="16dp"
         android:layout_marginBottom="140dp"
         android:text="Share"
+        android:textAllCaps="false"
         app:icon="@android:drawable/ic_menu_share"
+        app:iconGravity="textStart"
         app:backgroundTint="@color/md_theme_secondary"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:tint="@color/md_theme_onSecondary"
+        style="@style/Widget.Material3.FloatingActionButton.Secondary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
