@@ -2,12 +2,9 @@ package com.opt.nohomework.view
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import com.opt.nohomework.R
-import com.opt.nohomework.paper.PaperDimensions
 import com.opt.nohomework.paper.PaperSpecs
 import com.opt.nohomework.paper.PaperSize
 import com.opt.nohomework.paper.LineStyle
@@ -73,22 +70,6 @@ class LinedPaperEditText @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
-    // Configuration
-    var paperSize: PaperSize = PaperSize.A4
-    var lineStyle: LineStyle = LineStyle.COLLEGE
-    var showMargin: Boolean = true
-    var showHolePunches: Boolean = false
-    var restrictTextToMargin: Boolean = false
-    var texturedPaper: Boolean = true
-    var highQuality: Boolean = false
-    var addLighting: Boolean = true
-    var textureIntensity: Float = PaperTextureConfig.DEFAULT_TEXTURE_INTENSITY
-    var lightingVariation: Float = PaperTextureConfig.DEFAULT_LIGHTING_VARIATION
-
-    // Seeds for reproducible texture/lighting
-    var textureSeed: Long? = 42L
-    var lightingSeed: Long? = 42L
-
     // Pre-calculated metrics
     private var lineHeightPx: Float = 0f
     private var baselineOffset: Float = 0f
@@ -101,6 +82,22 @@ class LinedPaperEditText @JvmOverloads constructor(
 
     // Texture bitmap cache
     private var textureBitmap: Bitmap? = null
+
+    // Configuration - made private for better encapsulation and security
+    private var paperSize: PaperSize = PaperSize.A4
+    private var lineStyle: LineStyle = LineStyle.COLLEGE
+    private var showMargin: Boolean = true
+    private var showHolePunches: Boolean = false
+    private var restrictTextToMargin: Boolean = false
+    private var texturedPaper: Boolean = true
+    private var highQuality: Boolean = false
+    private var addLighting: Boolean = true
+    private var textureIntensity: Float = PaperTextureConfig.DEFAULT_TEXTURE_INTENSITY
+    private var lightingVariation: Float = PaperTextureConfig.DEFAULT_LIGHTING_VARIATION
+
+    // Seeds for reproducible texture/lighting
+    private var textureSeed: Long? = 42L
+    private var lightingSeed: Long? = 42L
 
     init {
         // Enable hardware acceleration for better performance
@@ -241,61 +238,19 @@ class LinedPaperEditText @JvmOverloads constructor(
     }
 
     /**
-     * Add camera imperfections (same as LinedPaperGenerator).
-     * Includes dust spots, scratches, chromatic aberration, and sensor noise.
+     * Add subtle lighting variations only - removed camera imperfections for cleaner look.
+     * No dust spots, scratches, or chromatic aberration.
      */
     private fun addTextureCameraImperfections(canvas: Canvas, width: Int, height: Int, random: Random) {
+        // Camera imperfections removed for cleaner, more stable rendering
+        // Only minimal sensor noise for subtle paper feel
         val paint = Paint().apply { isAntiAlias = true; isFilterBitmap = true }
         
-        // Dust spots (5-15 random circles)
-        repeat(5 + random.nextInt(11)) {
-            val x = random.nextFloat() * width
-            val y = random.nextFloat() * height
-            val radius = 2f + random.nextFloat() * 15f
-            val isDark = random.nextBoolean()
-            val alpha = (100 + random.nextInt(100)).toFloat()
-            paint.color = if (isDark) Color.argb(alpha.toInt(), 0, 0, 0) else Color.argb(alpha.toInt(), 255, 255, 255)
-            canvas.drawCircle(x, y, radius, paint)
-            if (random.nextFloat() > 0.5f) {
-                paint.maskFilter = BlurMaskFilter(radius * 0.5f, BlurMaskFilter.Blur.NORMAL)
-                canvas.drawCircle(x, y, radius, paint)
-                paint.maskFilter = null
-            }
-        }
-        
-        // Scratches (2-5 random lines)
-        repeat(2 + random.nextInt(4)) {
-            val x1 = random.nextFloat() * width
-            val y1 = random.nextFloat() * height
-            val x2 = x1 + (random.nextFloat() * 2f - 1f) * width * 0.3f
-            val y2 = y1 + (random.nextFloat() * 2f - 1f) * height * 0.3f
-            paint.color = Color.argb((50 + random.nextInt(50)), 0, 0, 0)
-            paint.strokeWidth = 0.5f + random.nextFloat() * 2f
-            paint.style = Paint.Style.STROKE
-            canvas.drawLine(x1, y1, x2, y2, paint)
-            paint.style = Paint.Style.FILL
-        }
-        
-        // Chromatic aberration (red/blue fringing at edges)
-        if (random.nextFloat() > 0.3f) {
-            val edge = random.nextInt(4)
-            val fringeWidth = 2f + random.nextFloat() * 10f
-            paint.style = Paint.Style.FILL
-            paint.alpha = (30 + random.nextInt(20))
-            when (edge) {
-                0 -> { paint.color = Color.RED; canvas.drawRect(0f, 0f, width.toFloat(), fringeWidth, paint) }
-                1 -> { paint.color = Color.BLUE; canvas.drawRect(width - fringeWidth, 0f, width.toFloat(), height.toFloat(), paint) }
-                2 -> { paint.color = Color.RED; canvas.drawRect(0f, height - fringeWidth, width.toFloat(), height.toFloat(), paint) }
-                3 -> { paint.color = Color.BLUE; canvas.drawRect(0f, 0f, fringeWidth, height.toFloat(), paint) }
-            }
-            paint.alpha = 255
-        }
-        
-        // Sensor noise (tiled 64x64 noise texture)
-        val noiseBitmap = createTextureNoiseTexture(64, 64, lightingVariation, random)
+        // Very subtle sensor noise only (no visible artifacts)
+        val noiseBitmap = createTextureNoiseTexture(64, 64, lightingVariation * 0.3f, random)
         val noiseShader = BitmapShader(noiseBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
         paint.shader = noiseShader
-        paint.alpha = (20 + random.nextInt(20))
+        paint.alpha = (10 + random.nextInt(10))
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
         paint.shader = null
         paint.alpha = 255
