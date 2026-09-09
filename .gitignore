@@ -1,4 +1,15 @@
 ```
-.gradle/
+# Build artifacts
 build/
+.gradle/
+
+# Dependencies
+node_modules/
+.libs/
+
+# Logs
+*.log
+
+# Environment specific
+local.properties
 ```

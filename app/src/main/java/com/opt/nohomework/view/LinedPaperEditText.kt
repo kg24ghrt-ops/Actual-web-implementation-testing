@@ -87,9 +87,12 @@ class LinedPaperEditText @JvmOverloads constructor(
     private var paperSize: PaperSize = PaperSize.A4
     private var lineStyle: LineStyle = LineStyle.COLLEGE
     private var showMargin: Boolean = true
+        get() = field
     private var showHolePunches: Boolean = false
+        get() = field
     private var restrictTextToMargin: Boolean = false
     private var texturedPaper: Boolean = true
+        get() = field
     private var highQuality: Boolean = false
     private var addLighting: Boolean = true
     private var textureIntensity: Float = PaperTextureConfig.DEFAULT_TEXTURE_INTENSITY
