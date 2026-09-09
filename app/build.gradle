@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace "com.opt.nohomework"
-    compileSdk 36
+    compileSdk 33
     
     signingConfigs {
         release {
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.opt.nohomework"
         minSdk 26
-        targetSdk 36
+        targetSdk 33
         versionCode 3
         versionName "3.0.0"
         
