@@ -28,8 +28,15 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+
+      - name: Configure Android SDK path
+        run: |
+          echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
 
       - name: Build Debug APK
         run: |
@@ -59,8 +66,15 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+
+      - name: Configure Android SDK path
+        run: |
+          echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
 
       - name: Restore Signing Keystore
         run: |
